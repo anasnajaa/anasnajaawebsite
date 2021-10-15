@@ -72,6 +72,10 @@ function startServer() {
     res.render("pages/about");
   });
 
+  app.get("/services", (req, res) => {
+    res.render("pages/services");
+  });
+
   app.listen(stage.port || "80", () => {
     console.log("Server started on: " + stage.port);
   });
