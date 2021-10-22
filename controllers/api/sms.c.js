@@ -1,12 +1,21 @@
 require("dotenv").config();
 const environment = process.env.NODE_ENV;
-const stage = require("../config/index")[environment];
+const stage = require("../../config/index")[environment];
 const client = require("twilio")(stage.sms.accountSid, stage.sms.authToken);
-const smsModel = require("../models/sms.m");
+const smsModel = require("../../models/sms.m");
 const { merge } = require("lodash");
-const { apiError } = require("../util/errorHandler");
+const { apiError } = require("../../util/errorHandler");
 
 const smsUpdateHookURL = stage.publicRootUrl + "/api/v1/hooks/sms/update";
+
+exports.getMessages = async (req, res) => {
+  try {
+    const messages = await smsModel.find({}).lean();
+    res.status(200).json({ messages });
+  } catch (error) {
+    apiError(res, error);
+  }
+};
 
 exports.sendMessage = (type, to, body) => {
   return new Promise((resolve, reject) => {
@@ -19,6 +28,7 @@ exports.sendMessage = (type, to, body) => {
           date_created: new Date(),
           date_updated: null,
           date_sent: null,
+          SmsStatus: "queued",
         }).save();
 
         const response = await client.messages.create({
@@ -86,5 +96,3 @@ exports.updateMessageStatus = async (req, res) => {
     apiError(res, error);
   }
 };
-
-exports.getMessages = async () => {};

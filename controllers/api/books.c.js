@@ -1,5 +1,5 @@
-const bookModel = require("../models/book.m");
-const { apiError } = require("../util/errorHandler");
+const bookModel = require("../../models/book.m");
+const { apiError } = require("../../util/errorHandler");
 
 exports.getBooks = async (req, res) => {
   try {

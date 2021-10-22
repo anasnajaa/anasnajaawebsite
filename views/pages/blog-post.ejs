@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head'); %>
+    <link rel="stylesheet" href="/css/prism.css">
+</head>
+
+<body>
+
+    <header>
+        <%- include('../partials/navigation', {page: "post"}); %>
+    </header>
+
+    <div class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-12">
+                <h1><%= post.title %> </h1>
+                <%- post.html %>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+
+    <script src="/js/prism.js"></script>
+</body>
+
+</html>

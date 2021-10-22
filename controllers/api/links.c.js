@@ -1,5 +1,5 @@
-const linkModel = require("../models/link.m");
-const { apiError } = require("../util/errorHandler");
+const linkModel = require("../../models/link.m");
+const { apiError } = require("../../util/errorHandler");
 
 exports.getLinks = async (req, res) => {
   try {

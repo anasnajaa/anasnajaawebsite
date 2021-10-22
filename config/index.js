@@ -29,6 +29,10 @@ const sharedSettings = {
     info: process.env.INFO_MOBILE,
   },
   publicRootUrl: process.env.PUBLIC_ROOT_URL,
+  blog: {
+    apiKey: process.env.BLOG_API_KEY,
+    apiUrl: process.env.BLOG_API_URL,
+  },
 };
 
 const developmentSettings = {

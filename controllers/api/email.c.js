@@ -1,6 +1,6 @@
-const { sendMail } = require("../util/mailer");
+const { sendMail } = require("../../util/mailer");
 
-module.exports = async (req, res) => {
+exports.testEmail = async (req, res) => {
   const emailResult = await sendMail({
     to: "spidernet12@gmail.com",
     subject: "Test Email",

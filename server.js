@@ -8,28 +8,31 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const { merge } = require("lodash");
-const router = require("./routes/index.r");
+const pagesRouter = require("./routes/pages.r");
+const apiRouter = require("./routes/api.r");
 const rateLimiter = require("./middleware/rateLimiter");
 const environment = process.env.NODE_ENV;
 const stage = require("./config/index")[environment];
 
-throng({
-  count: stage.workers,
-  lifetime: Infinity,
-  worker: startMogno,
-});
+// throng({
+//   count: stage.workers,
+//   lifetime: Infinity,
+//   worker: startMogno,
+// });
 
-function startMogno() {
-  mongoose.connect(stage.mongoUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-  const connection = mongoose.connection;
-  connection.once("open", () => {
-    console.log("MongoDB connection established");
-    startServer(connection);
-  });
-}
+// function startMogno() {
+
+// }
+
+mongoose.connect(stage.mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("MongoDB connection established");
+  startServer(connection);
+});
 
 function startServer() {
   const app = express();
@@ -55,8 +58,6 @@ function startServer() {
     )
   );
 
-  app.set("view engine", "ejs");
-
   app.use((req, res, next) => {
     if (
       process.env.NODE_ENV !== "development" &&
@@ -66,28 +67,20 @@ function startServer() {
     } else next();
   });
 
-  app.get("/", (req, res) => {
-    res.render("pages/index");
-  });
+  app.use("/", pagesRouter);
 
-  app.get("/about", (req, res) => {
-    res.render("pages/about");
-  });
-
-  app.get("/services", (req, res) => {
-    res.render("pages/services");
-  });
-
-  app.use("/api/v1", router);
+  app.use("/api/v1", apiRouter);
 
   app.all("/api/v1/*", (req, res) => {
-    res.status(404).json({
-      messages: ["not found"],
+    return res.status(404).json({
+      title: "Error",
+      message: "Endpoint Not Found",
+      type: "danger",
     });
   });
 
   app.all("/*", (req, res) => {
-    res.render("pages/404");
+    return res.render("pages/404");
   });
 
   app.listen(stage.port || "80", () => {
