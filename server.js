@@ -8,6 +8,8 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const { merge } = require("lodash");
+const router = require("./routes/index.r");
+const rateLimiter = require("./middleware/rateLimiter");
 const environment = process.env.NODE_ENV;
 const stage = require("./config/index")[environment];
 
@@ -74,6 +76,18 @@ function startServer() {
 
   app.get("/services", (req, res) => {
     res.render("pages/services");
+  });
+
+  app.use("/api/v1", router);
+
+  app.all("/api/v1/*", (req, res) => {
+    res.status(404).json({
+      messages: ["not found"],
+    });
+  });
+
+  app.all("/*", (req, res) => {
+    res.render("pages/404");
   });
 
   app.listen(stage.port || "80", () => {

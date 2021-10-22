@@ -3,6 +3,32 @@ const sharedSettings = {
   saltingRounds: 10,
   workers: process.env.WEB_CONCURRENCY || 1,
   mongoUri: process.env.ATLAS_URI_RW,
+  mailer: {
+    user: process.env.EMAIL_USER,
+    password: process.env.EMAIL_PASS,
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+  },
+  sms: {
+    accountSid: process.env.TWILIO_ACC_SID,
+    authToken: process.env.TWILIO_AUTH,
+    fromNumber: process.env.TWILIO_FROM,
+  },
+  jwtOption: { expiresIn: "1d", issuer: process.env.ISSUER },
+  jwtSecret: process.env.JWT_SECRET,
+  googleRecaptch: process.env.GOOGLE_RECAPTCHA_SECRET_KEY,
+  sendGridApiKey: process.env.SENDGRID_API_KEY,
+  emails: {
+    developers: process.env.EMAIL_DEV,
+    databaseAdmins: process.env.EMAIL_DBADMIN,
+    support: process.env.EMAIL_SUPPORT,
+    info: process.env.EMAIL_INFO,
+    payment: process.env.EMAIL_PAYMENT,
+  },
+  mobiles: {
+    info: process.env.INFO_MOBILE,
+  },
+  publicRootUrl: process.env.PUBLIC_ROOT_URL,
 };
 
 const developmentSettings = {
