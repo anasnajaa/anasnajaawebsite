@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head'); %>
+</head>
+
+<body>
+
+    <header>
+        <%- include('../partials/navigation', {page: "blog"}); %>
+    </header>
+
+    <div class="container my-4 py-5">
+        <div class="row">
+            <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
+                <%- include('../partials/blog-side-nav', {page: "topics"}); %>
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+                <div class="list-group">
+                    <% if(tags !== undefined && tags !== null && tags.length > 0){ %>
+                    <% tags.forEach(tag => { %>
+                    <a href="/blog/topics/<%=tag.slug%>" class="list-group-item text-decoration-none">
+                        <h5 class="d-inline">
+                            <span class="badge <%=tag.css%>">
+                                <%=tag.name%>
+                            </span>
+                        </h5>
+                        <h5 class="d-inline"><span class="badge bg-light text-dark">
+                                <%=tag.count?.posts || 0%></span>
+                        </h5><br>
+                        <p><small class="text-muted"><%= tag.description %></small></p>
+                    </a>
+                    <%}) %>
+                    <%}%>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+                    </footer>
+</body>
+
+</html>
