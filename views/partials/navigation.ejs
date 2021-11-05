@@ -1,20 +1,25 @@
 <nav class="fixed-top navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <span class="navbar-brand">Anas Najaa</span>
-        <button aria-controls="basic-navbar-nav" type="button" aria-label="Toggle navigation"
-            class="navbar-toggler collapsed">
+        <a class="navbar-brand" href="/">A.N</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="navbar-collapse collapse">
-            <div class="mr-auto navbar-nav">
-                <a href="/" class="<%=page==="home" ? "active": ""%> nav-link">Home</a>
-                <a href="/blog" class="nav-link">Blog</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a href="/" class="<%=page==="home" ? "active": ""%> nav-link">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/blog" class="<%=page==="blog" ? "active": ""%> nav-link">Blog</a>
+                </li>
+                <li class="nav-item"></li>
                 <a href="/services" class="<%=page==="services" ? "active": ""%> nav-link">Services</a>
-                <a href="/portfolio" class="nav-link">Portfolio</a>
-                <a href="/links" class="nav-link">Links</a>
-                <a href="/books" class="nav-link">Books</a>
-                <a href="/playground" class="nav-link">Playground</a>
-            </div>
+                </li>
+                <li class="nav-item"><a href="/portfolio" class="nav-link">Portfolio</a></li>
+                <li class="nav-item"><a href="/links" class="nav-link">Links</a></li>
+                <li class="nav-item"><a href="/books" class="nav-link">Books</a></li>
+            </ul>
         </div>
     </div>
 </nav>
