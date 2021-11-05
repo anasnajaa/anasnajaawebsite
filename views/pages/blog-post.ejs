@@ -9,16 +9,37 @@
 <body>
 
     <header>
-        <%- include('../partials/navigation', {page: "post"}); %>
+        <%- include('../partials/navigation', {page: "blog"}); %>
     </header>
 
-    <div class="container mt-5 pt-5">
+    <div class="container my-4 py-5">
         <div class="row">
-            <div class="col-12">
-                <h1><%= post.title %> </h1>
-                <%- post.html %>
+            <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
+                <%- include('../partials/blog-side-nav', {page: "blog"}); %>
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+                <div class="row">
+                    <div class="col-12">
+                        <h1><%= post.title %> </h1>
+                        <small data-bs-toggle="tooltip" data-bs-placement="top" title="<%= post.published_at_formated%>"
+                            class="text-muted">Published <%= post.published_at_friendly %>
+                        </small>
+                    </div>
+
+                    <%if(post.tags !== undefined && post.tags !== null){ %>
+                    <div class="col-12 mb-4">
+                        <small class="text-muted"><i>Tags:</i></small>
+                        <% post.tags.forEach(tag => { %>
+                        <%- include('../partials/blog-tag', {tag: tag}); %>
+                        <%})%>
+                    </div>
+                    <%}%>
+                    <div class="col-12">
+                    <%- post.html %>
+                </div>
             </div>
         </div>
+    </div>
     </div>
 
     <footer>
@@ -26,6 +47,12 @@
     </footer>
 
     <script src="/js/prism.js"></script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
 </body>
 
 </html>
