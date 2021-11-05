@@ -16,13 +16,158 @@
             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
                 <%- include('../partials/blog-side-nav', {page: "archive"}); %>
             </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <div class="form-group">
+                            <input placeholder="Title or Date (YYYY-MM-DD)" type="text" id="txtFilter"
+                                class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <table class="table table-sm table-striped table-bordered table-hover">
+                            <tbody id="tblArchive">
+                                <%archiveElements.forEach(elm => {%>
+                                <%-elm%>
+                                <%})%>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+
     </div>
 
     <footer>
         <%- include('../partials/footer'); %>
     </footer>
+    <script>
+        const txtFilter = $("#txtFilter");
+        const tblArchive = $("#tblArchive");
+        const postsList = $("[data-post-date]");
+        const headersList = $("[data-header-date]");
+
+        const filterHeadersByDate = (searchText) => {
+            if (
+                headersList !== undefined &&
+                headersList !== null &&
+                headersList.length > 0
+            ) {
+                let yearAndMonth = null;
+                try {
+                    yearAndMonth = searchText.substring(0, 7);
+                } catch (e) {
+                    yearAndMonth = null;
+                }
+                for (let i = 0; i < headersList.length; i++) {
+                    const elm = $(headersList[i]);
+                    const date = elm.attr("data-header-date");
+                    if (date.startsWith(yearAndMonth)) {
+                        elm.show();
+                    } else {
+                        elm.hide();
+                    }
+                }
+            }
+        };
+
+        const filterHeadersByDates = (datesList) => {
+            if (
+                headersList !== undefined &&
+                headersList !== null &&
+                headersList.length > 0
+            ) {
+                for (let i = 0; i < datesList.length; i++) {
+                    try {
+                        datesList[i] = datesList[i].substring(0, 7);
+                    } catch (e) {}
+                }
+
+                for (let i = 0; i < headersList.length; i++) {
+                    const elm = $(headersList[i]);
+                    const date = elm.attr("data-header-date");
+                    if (datesList.length === 0) {
+                        elm.show();
+                    } else {
+                        let hasMatches = false;
+                        for (let i1 = 0; i1 < datesList.length; i1++) {
+                            if (date.startsWith(datesList[i1])) {
+                                hasMatches = true;
+                                break;
+                            }
+                        }
+                        if (hasMatches) {
+                            elm.show();
+                        } else {
+                            elm.hide();
+                        }
+                    }
+                }
+            }
+        };
+
+        const filterPostsByDate = (searchText) => {
+            if (
+                postsList !== undefined &&
+                postsList !== null &&
+                postsList.length > 0
+            ) {
+                for (let i = 0; i < postsList.length; i++) {
+                    const elm = $(postsList[i]);
+                    const date = elm.attr("data-post-date");
+                    if (date.startsWith(searchText)) {
+                        elm.show();
+                    } else {
+                        elm.hide();
+                    }
+                }
+            }
+        };
+
+        const filterPostsByTitle = (searchText) => {
+            if (
+                postsList !== undefined &&
+                postsList !== null &&
+                postsList.length > 0
+            ) {
+                let datesList = [];
+                for (let i = 0; i < postsList.length; i++) {
+                    const elm = $(postsList[i]);
+                    const title = elm.attr("data-archive-title");
+                    const date = elm.attr("data-post-date");
+                    if (title.toLowerCase().indexOf(searchText) > -1) {
+                        elm.show();
+                        datesList.push(date);
+                    } else {
+                        elm.hide();
+                    }
+                }
+                filterHeadersByDates(datesList);
+            }
+        };
+
+
+        txtFilter.on("keyup", () => {
+            let searchText = txtFilter.val();
+            if (
+                searchText === undefined ||
+                searchText === null ||
+                searchText === ""
+            ) {
+                postsList.show();
+                headersList.show();
+                return;
+            } else if (searchText.match(/^\d/)) {
+                searchText = searchText.toLowerCase();
+                filterHeadersByDate(searchText);
+                filterPostsByDate(searchText);
+            } else {
+                searchText = searchText.toLowerCase();
+                filterPostsByTitle(searchText);
+            }
+        });
+    </script>
 </body>
 
 </html>

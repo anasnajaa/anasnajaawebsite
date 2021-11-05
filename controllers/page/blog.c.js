@@ -42,7 +42,57 @@ exports.blogPosts = async (req, res) => {
 };
 
 exports.blogArchive = async (req, res) => {
-  res.render("pages/blog-archive", {});
+  const monthYearElement = (datePublished, year, month) => {
+    const elmData = datePublished.format("YYYY-MM-01T00:00:000");
+    return `
+        <tr data-header-date="${elmData}" class="bg-secondary">
+            <td colspan="3"><strong class="text-white">${year}-${month}</strong></td>
+        </tr>`;
+  };
+
+  const postElement = ({ id, datePublished, slug, title }) => {
+    const elmData = datePublished.format("YYYY-MM-DDTHH:mm:sss");
+    return `
+        <tr data-post-date="${elmData}" data-archive-title="${title}">
+            <td class="text-center">${datePublished.format("DD")}</td>
+            <td>
+                <a class="text-decoration-none text-dark" href="/blog/${slug}">${title}</a>
+            </td>
+        </tr>`;
+  };
+
+  const archiveElements = [];
+  const response = await blogModel.getAllPosts();
+
+  if (
+    response.posts !== undefined &&
+    response.posts !== null &&
+    response.posts.length > 0
+  ) {
+    const posts = response.posts;
+    let currentMonth = null;
+    let currentYear = null;
+
+    posts.forEach((post) => {
+      post.datePublished = new moment(post.published_at);
+      const postMonth = post.datePublished.month();
+      const postYear = post.datePublished.year();
+
+      if (postMonth !== currentMonth || postYear !== currentYear) {
+        currentMonth = postMonth;
+        currentYear = postYear;
+        archiveElements.push(
+          monthYearElement(
+            post.datePublished,
+            currentYear,
+            post.datePublished.format("MMMM")
+          )
+        );
+      }
+      archiveElements.push(postElement(post));
+    });
+  }
+  res.render("pages/blog-archive", { archiveElements });
 };
 
 exports.postPage = async (req, res) => {
