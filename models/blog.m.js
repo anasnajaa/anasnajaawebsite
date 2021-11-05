@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require("dotenv").config();
 const environment = process.env.NODE_ENV;
 const stage = require("../config/index")[environment];
@@ -68,4 +69,19 @@ exports.getPageBySlug = async (slug) => {
     return body.pages[0];
   }
   return null;
+};
+
+exports.tagsCssResolver = (id) => {
+  if (id === "5f86bc611488fc001eea51ae") {
+    return "blog-red-tag";
+  }
+  if (id === "5f8a7e4a11e139001eb1d5d2") {
+    return "blog-blue-tag";
+  }
+  if (id === "5f7f519ecbab9f001ede0c9b") {
+    return "blog-green-tag";
+  }
+  if (id === "5f8a7f6d11e139001eb1d5d6") {
+    return "blog-purple-tag";
+  }
 };
