@@ -1,7 +1,5 @@
 require("dotenv").config();
-
-const throng = require("throng");
-var express = require("express");
+const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
@@ -13,16 +11,6 @@ const apiRouter = require("./routes/api.r");
 const rateLimiter = require("./middleware/rateLimiter");
 const environment = process.env.NODE_ENV;
 const stage = require("./config/index")[environment];
-
-// throng({
-//   count: stage.workers,
-//   lifetime: Infinity,
-//   worker: startMogno,
-// });
-
-// function startMogno() {
-
-// }
 
 mongoose.connect(stage.mongoUri, {
   useNewUrlParser: true,
