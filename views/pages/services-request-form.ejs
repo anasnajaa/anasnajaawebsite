@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head'); %>
+    <style>
+        .c-form {
+            max-width: 960px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <%- include('../partials/navigation', {page: "services"}); %>
+    </header>
+
+    <main>
+        <div class="container c-form p-3 mt-5">
+            <div class="py-5 text-center">
+                <h2>Request a service</h2>
+                <p>Thank you for your intrest in my services! Please use below form to submit your service
+                    request. You'll recive an OTP email to verify your identity (check you Junk/Spam folder if you don't
+                    see the verification email).
+                </p>
+            </div>
+
+            <div class="row g-5">
+                <div class="col-12">
+                    <div class="row g-3">
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="ddService" class="form-label">Service</label>
+                            <select class="form-select" id="ddService" required>
+                                <option value="">Choose...</option>
+                                <option>General IT Support</option>
+                                <option>Teaching Programming</option>
+                                <option>Web / App Development</option>
+                            </select>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="txtName" class="form-label">Name <span
+                                    class="text-muted">(Optional)</span></label>
+                            <input type="text" class="form-control" id="txtName" placeholder="" value="" required>
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="txtEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="txtEmail" required
+                                placeholder="you@example.com">
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
+                            <label for="txtMobile" class="form-label">Mobile <span
+                                    class="text-muted">(Optional)</span></label>
+                            <input type="number" class="form-control" id="txtMobile" placeholder="you@example.com">
+                        </div>
+                        <div class="col-12">
+                            <small class="text-muted">You're contact information is private and is
+                                <b>only</b> used to reach out to you and
+                                validate your identity.</small>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="txtDescription" class="form-label">Request Description</label>
+                            <textarea class="form-control" id="txtDescription" rows="4"
+                                placeholder="Please describe your request briefly" required></textarea>
+                            <div class="invalid-feedback">
+                                Please enter your shipping address.
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button class="w-100 btn btn-primary btn-lg" id="btnSubmit">Submit Request</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer><%- include('../partials/footer'); %></footer>
+
+    <script>
+        const ddService = $("#ddService");
+        const txtName = $("#txtName");
+        const txtEmail = $("#txtEmail");
+        const txtMobile = $("#txtMobile");
+        const txtDescription = $("#txtDescription");
+        const btnSubmit = $("#btnSubmit");
+    </script>
+</body>
+
+</html>
