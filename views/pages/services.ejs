@@ -15,37 +15,45 @@
 
         <div class="p-3 mt-5 container">
             <div class="row">
-                <div class="col-12">
-                    <div class="jumbotron">
-                        <h1>How can I help you?</h1>
-                        <div>
-                            <p>Regardless of your business's size, you're always on the lookout for the right IT partner
-                                that
-                                will guide you through IT complexities and relevant solutions. I hope to fill that role
-                                and
-                                assist you to the best of my abilities. The services that I offer are all related to my
-                                expertise, knowledge and skills that I accumulated throughout my personal and
-                                professional
-                                journey in IT and Software Development.<br>Please explore the services that I offer
-                                below and
-                                place a request as you see fit.</p>
+                <div class="col-12 mb-3">
+                    <div class="h-100 p-5 bg-light border rounded-3">
+                        <h1><%= pd.headerCard.title %></h1>
+                        <p><%- pd.headerCard.html %></p>
+                        <hr />
+                        <div class="btn-group" role="group">
+                            <a href="/services/request" class="btn btn-primary">Place a request</a>
+                            <a href="/services/faq" target="_blank" class="btn btn-outline-secondary">FAQs</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="accordion" id="accordionPanelsStayOpenExample">
+                    <div class="accordion" id="servicesAccordion">
+                        <% for(i=0;i<pd.services.length;i++) { %>
+                        <% const service = pd.services[i]; %>
                         <div class="accordion-item">
-                            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                            <h2 class="accordion-header" id="id_<%=service.id%>-heading">
                                 <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                    aria-controls="panelsStayOpen-collapseOne">
+                                    data-bs-target="#id_<%=service.id%>-collapse"
+                                    aria-expanded="<%= i===0 ? "true" : "false" %>"
+                                    aria-controls="id_<%=service.id%>-collapse">
+                                    <%= service.title %>
                                 </button>
                             </h2>
-                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
-                                aria-labelledby="panelsStayOpen-headingOne">
-                                <div class="accordion-body"></div>
+                            <div id="id_<%=service.id%>-collapse"
+                                class="accordion-collapse collapse <%= i===0 ? "show" : ""%>"
+                                aria-labelledby="id_<%=service.id%>-heading" data-bs-parent="#servicesAccordion">
+                                <div class="accordion-body">
+                                    <%- service.html %>
+                                    <hr />
+                                    <div class="btn-group" role="group">
+                                        <a href="/services/request" class="btn btn-primary">Place a request</a>
+                                        <a href="/services/faq" target="_blank"
+                                            class="btn btn-outline-secondary">FAQs</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <%}%>
                     </div>
                 </div>
             </div>
@@ -54,7 +62,7 @@
 
     <footer>
         <%- include('../partials/footer'); %>
-    </footer>
+                        </footer>
 </body>
 
 </html>

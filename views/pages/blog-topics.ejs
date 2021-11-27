@@ -18,8 +18,8 @@
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
                 <div class="list-group">
-                    <% if(tags !== undefined && tags !== null && tags.length > 0){ %>
-                    <% tags.forEach(tag => { %>
+                    <% if(pd.tags !== undefined && pd.tags !== null && pd.tags.length > 0){ %>
+                    <% pd.tags.forEach(tag => { %>
                     <a href="/blog/topics/<%=tag.slug%>" class="list-group-item text-decoration-none">
                         <h5 class="d-inline">
                             <span class="badge <%=tag.css%>">
@@ -39,9 +39,7 @@
     </div>
     </div>
 
-    <footer>
-        <%- include('../partials/footer'); %>
-                    </footer>
+    <footer><%- include('../partials/footer'); %></footer>
 </body>
 
 </html>

@@ -27,9 +27,15 @@
                     <div class="col-12">
                         <table class="table table-sm table-striped table-bordered table-hover">
                             <tbody id="tblArchive">
-                                <%archiveElements.forEach(elm => {%>
+                                <%pd.archiveElements.forEach(elm => {%>
                                 <%-elm%>
                                 <%})%>
+                                <tr id="messageNoMatchingPosts" class="text-center" style="display: none;">
+                                    <td colspan="2"><i>No Posts match your search term</i></td>
+                                </tr>
+                                <tr id="messageNoPostsFoundForSelectedDate" class="text-center" style="display: none;">
+                                    <td colspan="2"><i>No Posts found for the selected date</i></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -47,6 +53,8 @@
         const tblArchive = $("#tblArchive");
         const postsList = $("[data-post-date]");
         const headersList = $("[data-header-date]");
+        const messageNoMatchingPosts = $("#messageNoMatchingPosts");
+        const messageNoPostsFoundForSelectedDate = $("#messageNoPostsFoundForSelectedDate");
 
         const filterHeadersByDate = (searchText) => {
             if (
@@ -55,6 +63,7 @@
                 headersList.length > 0
             ) {
                 let yearAndMonth = null;
+                let atLeastOneFound = false;
                 try {
                     yearAndMonth = searchText.substring(0, 7);
                 } catch (e) {
@@ -65,10 +74,16 @@
                     const date = elm.attr("data-header-date");
                     if (date.startsWith(yearAndMonth)) {
                         elm.show();
+                        atLeastOneFound = true;
                     } else {
                         elm.hide();
                     }
                 }
+
+                if (atLeastOneFound)
+                    messageNoPostsFoundForSelectedDate.hide();
+                else
+                    messageNoPostsFoundForSelectedDate.show();
             }
         };
 
@@ -88,8 +103,10 @@
                     const elm = $(headersList[i]);
                     const date = elm.attr("data-header-date");
                     if (datesList.length === 0) {
-                        elm.show();
+                        elm.hide();
+                        messageNoMatchingPosts.show();
                     } else {
+                        messageNoMatchingPosts.hide();
                         let hasMatches = false;
                         for (let i1 = 0; i1 < datesList.length; i1++) {
                             if (date.startsWith(datesList[i1])) {
@@ -104,6 +121,11 @@
                         }
                     }
                 }
+            } else {
+                for (let i = 0; i < headersList.length; i++) {
+                    const elm = $(headersList[i]);
+                    elm.hide();
+                }
             }
         };
 
@@ -113,25 +135,32 @@
                 postsList !== null &&
                 postsList.length > 0
             ) {
+                let atLeastOneFound = false;
                 for (let i = 0; i < postsList.length; i++) {
                     const elm = $(postsList[i]);
                     const date = elm.attr("data-post-date");
                     if (date.startsWith(searchText)) {
                         elm.show();
+                        atLeastOneFound = true;
                     } else {
                         elm.hide();
                     }
                 }
+
+                if (atLeastOneFound)
+                    messageNoPostsFoundForSelectedDate.hide();
+                else
+                    messageNoPostsFoundForSelectedDate.show();
             }
         };
 
         const filterPostsByTitle = (searchText) => {
+            let datesList = [];
             if (
                 postsList !== undefined &&
                 postsList !== null &&
                 postsList.length > 0
             ) {
-                let datesList = [];
                 for (let i = 0; i < postsList.length; i++) {
                     const elm = $(postsList[i]);
                     const title = elm.attr("data-archive-title");
@@ -143,8 +172,8 @@
                         elm.hide();
                     }
                 }
-                filterHeadersByDates(datesList);
             }
+            filterHeadersByDates(datesList);
         };
 
 

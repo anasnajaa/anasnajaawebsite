@@ -14,15 +14,15 @@
     <div class="container my-4 py-5">
         <div class="row">
             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12 col-12">
-                <%- include('../partials/blog-side-nav', {page: (tag !== undefined && tag !== null) ? "topics" : "blog"}); %>
+                <%- include('../partials/blog-side-nav', {page: (pd.tag !== undefined && pd.tag !== null) ? "topics" : "blog"}); %>
             </div>
             <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
-                <% if(tag){ %>
-                <h3><i>Topic: <span class="text-capitalize"><%=tag%></span></i></h3>
+                <% if(pd.tag){ %>
+                <h3><i>Topic: <span class="text-capitalize"><%=pd.tag%></span></i></h3>
                 <%}%>
-                <%if(posts !== undefined && posts !== null && posts.length > 0){%>
+                <%if(pd.posts !== undefined && pd.posts !== null && pd.posts.length > 0){%>
                 <div class="row">
-                    <% posts.forEach(post => {%>
+                    <% pd.posts.forEach(post => {%>
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                         <div class="mb-2 card">
                             <div class="cursor-pointer card-body">
@@ -46,7 +46,7 @@
                             <%} else { %>
                             <h2>No Posts</h2>
                             <%}%>
-                        <%- include('../partials/pagination', {pagination: pagination}); %>
+                        <%- include('../partials/pagination', {pagination: pd.pagination}); %>
                         </div>
                     </div>
                 </div>
