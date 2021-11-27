@@ -1,0 +1,22 @@
+<div class="col-sm-6 col-lg-4 mb-4">
+    <div class="card">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="<%=item.thumb%>" class="img-fluid rounded-start">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"><%=item.title%></h5>
+                    <p class="card-text">
+                        <a class="btn btn-sm btn-outline-secondary" href="<%=item.url%>"><i class="fas fa-search"></i></a>
+                    </p>
+                    <div class="w-100">
+                        <%item.tags.forEach(tag=>{%>
+                        <%- include('../partials/lib-tag', {tag}); %>
+                        <%})%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

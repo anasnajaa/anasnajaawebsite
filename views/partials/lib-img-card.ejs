@@ -1,0 +1,18 @@
+<div class="col-sm-6 col-lg-4 mb-4">
+    <div class="card bg-dark text-white">
+        <img src="<%=item.thumb%>" class="card-img" />
+        <div class="card-img-overlay d-flex align-items-end p-0">
+            <div class="w-100 p-2 bg-shade">
+                <a href="<%=item.url%>" target="_blank"
+                    class="card-title text-light text-decoration-none"><%=item.title%>
+                    <i class="fas fa-external-link-alt"></i>
+                </a><br />
+                <%if(item.tags !== undefined && item.tags !== null && item.tags.length > 0){%>
+                <%item.tags.forEach(tag=>{%>
+                <%- include('../partials/lib-tag', {tag}); %>
+                <%})%>
+                <%}%>
+            </div>
+        </div>
+    </div>
+</div>

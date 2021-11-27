@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head'); %>
+    <script src="/libs/masonry.min.js"></script>
+    <script src="/libs/imagesloaded.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/navigation', {page: "library"}); %>
+    </header>
+    <main>
+        <div class="p-3 mt-5 container">
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label for="ddTypes" class="form-label">Type</label>
+                    <select class="form-select form-select-lg mb-3 text-capitalize" id="ddTypes">
+                        <option value="" <%= pd.selectedType === null ? "selected" : "" %>>All Types</option>
+                        <% if(pd.types !== undefined && pd.types !== null && pd.types.length > 0){ %>
+                            <% pd.types.forEach(type => { %>
+                                <option value="<%=type%>" <%= pd.selectedType === type ? "selected" : "" %>
+                                    class="text-uppercase">
+                                    <%=type%>
+                                </option>
+                            <%})%>
+                        <%}%>
+                    </select>
+                </div>
+                <div class="col-6">
+                    <label for="ddTags" class="form-label">Tag</label>
+                    <select class="form-select form-select-lg mb-3 text-capitalize" id="ddTags">
+                        <option value="" <%= pd.selectedType === null ? "selected" : "" %>>All Tags</option>
+                        <% if(pd.tags !== undefined && pd.tags !== null && pd.tags.length > 0){ %>
+                            <% pd.tags.forEach(tag => { %>
+                                <option value="<%=tag%>" <%= pd.selectedTag === tag ? "selected" : "" %> class="text-uppercase">
+                                    <%=tag%>
+                                </option>
+                            <%})%>
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <%- include('../partials/pagination', {pagination: pd.pagination}); %>
+                </div>
+            </div>
+            <div class="row" id="itemsContainer">
+                <% if(pd.items !== undefined && pd.items !== null && pd.items.length > 0){ %>
+                <% pd.items.forEach(item => { %>
+                    <% if(item.type === "links"){%>
+                        <%- include('../partials/lib-link-card', {item}); %>
+                    <%} else if (item.type === "images"){%>
+                        <%- include('../partials/lib-img-card', {item}); %>
+                    <%} else if (item.type === "books"){%>
+                        <%- include('../partials/lib-book-card', {item}); %>
+                    <%}%>
+                <%})%>
+                <%} else {%>
+                    <div class="col-12 text-center"><h2><i>No Items</i></h2></div>
+                <%}%>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <%- include('../partials/pagination', {pagination: pd.pagination}); %>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer><%- include('../partials/footer'); %></footer>
+    <script>
+        const ddTypes = $("#ddTypes");
+        const ddTags = $("#ddTags");
+        const itemsContainer = $('#itemsContainer');
+
+        const updateQs = (query, val) => {
+            let url = new URL(window.location.href);
+            let search_params = url.searchParams;
+            search_params.set(query, val);
+            url.search = search_params.toString();
+            return url.toString();
+        }
+
+        ddTypes.on("change", () => {
+            window.location = updateQs('t', ddTypes.val());
+        });
+
+        ddTags.on("change", () => {
+            window.location = updateQs('tg', ddTags.val());
+        });
+
+        itemsContainer.masonry({
+            percentPosition: true,
+        });
+
+        itemsContainer.imagesLoaded().progress(() => {
+            itemsContainer.masonry({
+                percentPosition: true,
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -39,6 +39,40 @@ html {
     color: white;
 }
 
+.lib-green-dark {
+    background-color: #03506F;
+    color: white;
+}
+
+.lib-blue-dark {
+    background-color: #001E6C;
+    color: white;
+}
+
+.lib-purple-dark {
+    background-color: #700B97;
+    color: white;
+}
+
+.lib-gray-dark {
+    background-color: #3C415C;
+    color: white;
+}
+
+.lib-blue-light {
+    background-color: #617BE3;
+    color: white;
+}
+
+.lib-pink-dark{
+    background-color: #D597CE;
+    color: white;
+}
+
+.bg-shade {
+    background-color:rgba(128, 128, 128, .8);
+}
+
 @media (max-width: 5000px) {
     .blog-side-nav{
         flex-direction: column !important;
