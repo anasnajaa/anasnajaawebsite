@@ -68,7 +68,7 @@ function startServer() {
   });
 
   app.all("/*", (req, res) => {
-    return res.render("pages/404");
+    return res.render("pages/404", { pd: {} });
   });
 
   app.listen(stage.port || "80", () => {
