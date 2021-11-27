@@ -2,14 +2,14 @@
 <nav>
     <ul class="pagination justify-content-center">
         <li class="page-item <%= (pagination.page - 1) === 0 ? "disabled" : "" %>">
-            <a href="/blog?p=<%=pagination.page - 1%>" class="page-link">Previous</a>
+            <a href="<%=pagination.url%>&p=<%=pagination.page - 1%>" class="page-link">Previous</a>
         </li>
         <% for(let i = 1; i<=pagination.pages; i++){ %>
         <li class="page-item <%= pagination.page === i ? "active" : "" %>"><a class="page-link"
-                href="/blog?p=<%=i%>"><%=i%></a></li>
+                href="<%=pagination.url%>&p=<%=i%>"><%=i%></a></li>
         <%}%>
         <li class="page-item <%= (pagination.page + 1) > pagination.pages ? "disabled" : "" %>">
-        <a href="/blog?p=<%=pagination.page + 1%>" class="page-link" href="#">Next</a>
+        <a href="<%=pagination.url%>&p=<%=pagination.page + 1%>" class="page-link" href="#">Next</a>
         </li>
     </ul>
 </nav>

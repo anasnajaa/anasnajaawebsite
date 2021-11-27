@@ -8,6 +8,12 @@ exports.blogPosts = async (req, res) => {
   p = p || 1;
   l = l || 4;
 
+  p = parseInt(p);
+  l = parseInt(l);
+
+  if (p === 0 || p === NaN) p = 1;
+  if (l === 0 || l === NaN) l = 4;
+
   const response = await blogModel.getPosts(l, p, tag);
 
   if (
@@ -32,12 +38,21 @@ exports.blogPosts = async (req, res) => {
       }
     });
   }
+  const pagination = response.meta.pagination;
+
+  if (tag) {
+    pagination.url = `/blog/topics/${tag}?l=${l}`;
+  } else {
+    pagination.url = `/blog?l=${l}`;
+  }
 
   res.render("pages/blog", {
-    posts: response.posts,
-    pagination: response.meta.pagination,
-    page: p,
-    tag,
+    pd: {
+      posts: response.posts,
+      pagination,
+      page: p,
+      tag,
+    },
   });
 };
 
@@ -92,7 +107,11 @@ exports.blogArchive = async (req, res) => {
       archiveElements.push(postElement(post));
     });
   }
-  res.render("pages/blog-archive", { archiveElements });
+  res.render("pages/blog-archive", {
+    pd: {
+      archiveElements,
+    },
+  });
 };
 
 exports.postPage = async (req, res) => {
@@ -110,7 +129,7 @@ exports.postPage = async (req, res) => {
         tag.css = blogModel.tagsCssResolver(tag.id);
       });
     }
-    return res.render("pages/blog-post", { post });
+    return res.render("pages/blog-post", { pd: { post } });
   }
 
   return res.render("pages/404");
@@ -122,5 +141,5 @@ exports.blogTopics = async (req, res) => {
   tags.forEach((tag) => {
     tag.css = blogModel.tagsCssResolver(tag.id);
   });
-  return res.render("pages/blog-topics", { tags });
+  return res.render("pages/blog-topics", { pd: { tags } });
 };
