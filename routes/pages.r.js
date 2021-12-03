@@ -14,6 +14,7 @@ router.get("/library", pagesController.libraryPage);
 router.get("/services", pagesController.servicePage);
 router.get("/services/request", servicesController.serviceRequestForm);
 router.get("/services/faq", servicesController.serviceFaq);
+router.get("/services/verify-request", servicesController.serviceVerify);
 
 router.get("/blog", blogController.blogPosts);
 router.get("/blog/topics/:tag", blogController.blogPosts);

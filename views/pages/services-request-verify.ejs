@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head'); %>
+</head>
+
+<body>
+    <header>
+    <%- include('../partials/navigation', {page: "services"}); %>
+    </header>
+    <main>
+        <div class="container p-3 mt-5">
+            <div class="row g-3">
+                <div id="formContainer" class="col-8 mx-auto">
+                    <div class="py-3 text-center">
+                        <h2>Validate your email</h2>
+                    </div>
+                    <label for="txtOtp" class="form-label">Please enter the OTP sent your email to complete your request:</label>
+                    <input type="text" class="form-control" id="txtOtp" placeholder="OTP">
+                    <div class="invalid-feedback">
+                        Please enter a valid OTP.
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button class="w-100 btn btn-primary btn-lg" id="btnVerify">Verify</button>
+                </div>
+                <div id="successContainer" class="col-8 mx-auto" style="display: none;">
+                    <div class="py-3 text-center">
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Thank you!</h4>
+                            <p>Your request has been forwarded. I'll get in touch with you within 2 business days.</p>
+                            <hr>
+                            <p class="mb-0">You'll be redirected to home page in 5 seconds.</p>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+    <script>
+        const btnVerify = $("#btnVerify");
+        const txtOtp = $("#txtOtp");
+        const successContainer = $("#successContainer");
+        const formContainer = $("#formContainer");
+        const requestId = "<%=pd.id%>";
+
+        btnVerify.on("click", async ()=>{
+            const otp = txtOtp.val();
+
+            btnVerify.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
+
+            const res = await post(`/api/v1/service/${requestId}/verify`, {otp});
+            const bod = await res.json();
+
+            if(!res.ok){ alert(bod.message); return; }
+
+            btnVerify.html(`Verify`).prop("disabled", "");
+            
+            formContainer.hide();
+            successContainer.show();
+
+            setTimeout(()=>{
+                window.location = "/";
+            }, 7000);
+        });
+    </script>
+</body>

@@ -6,6 +6,7 @@ const linksController = require("../controllers/api/links.c");
 const blogController = require("../controllers/api/blog.c");
 const emailController = require("../controllers/api/email.c");
 const otherController = require("../controllers/api/other.c");
+const serviceController = require("../controllers/api/service.c");
 
 const router = express.Router();
 
@@ -55,5 +56,9 @@ router.get("/email/test", emailController.testEmail);
 // Other
 router.get("/awake", otherController.awake);
 // router.get("/captcha", require("../controllers/captcha"));
+
+// Service
+router.post("/service", serviceController.newServiceRequest);
+router.post("/service/:requestId/verify", serviceController.verifyServiceOtp);
 
 module.exports = router;

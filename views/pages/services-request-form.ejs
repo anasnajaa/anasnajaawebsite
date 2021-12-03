@@ -3,58 +3,57 @@
 
 <head>
     <%- include('../partials/head'); %>
-    <style>
-        .c-form {
-            max-width: 960px;
-        }
-    </style>
 </head>
 
 <body>
-
     <header>
         <%- include('../partials/navigation', {page: "services"}); %>
+        <script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoaded&render=explicit" async defer></script>
     </header>
 
     <main>
-        <div class="container c-form p-3 mt-5">
-            <div class="py-5 text-center">
-                <h2>Request a service</h2>
-                <p>Thank you for your intrest in my services! Please use below form to submit your service
-                    request. You'll recive an OTP email to verify your identity (check you Junk/Spam folder if you don't
-                    see the verification email).
-                </p>
-            </div>
-
+        <div class="container p-3 mt-5">
             <div class="row g-5">
-                <div class="col-12">
+                <div class="col-8 mx-auto">
+                    <div class="py-3 text-center">
+                        <h2>Request a service</h2>
+                        <p>Thank you for your interest in my services! Please use below form to submit your service
+                            request. You'll receive an OTP email to verify your identity (check your Junk/Spam folder if you don't
+                            see the verification email).
+                        </p>
+                    </div>
                     <div class="row g-3">
                         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                            <label for="ddService" class="form-label">Service</label>
+                            <label for="ddService" class="form-label">Service <span class="text-danger">*</span></label>
                             <select class="form-select" id="ddService" required>
-                                <option value="">Choose...</option>
-                                <option>General IT Support</option>
-                                <option>Teaching Programming</option>
-                                <option>Web / App Development</option>
+                                <option value="0">Choose...</option>
+                                <option value="1">General IT Support</option>
+                                <option value="2">Teaching Programming</option>
+                                <option value="3">Web / App Development</option>
                             </select>
+                            <div class="invalid-feedback">
+                                Please select a service.
+                            </div>
                         </div>
 
                         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="txtName" class="form-label">Name <span
                                     class="text-muted">(Optional)</span></label>
-                            <input type="text" class="form-control" id="txtName" placeholder="" value="" required>
+                            <input type="text" class="form-control" id="txtName">
                         </div>
 
                         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
-                            <label for="txtEmail" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="txtEmail" required
-                                placeholder="you@example.com">
+                            <label for="txtEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="txtEmail" placeholder="you@example.com">
+                            <div class="invalid-feedback">
+                                Please enter a valid email.
+                            </div>
                         </div>
 
                         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="txtMobile" class="form-label">Mobile <span
                                     class="text-muted">(Optional)</span></label>
-                            <input type="number" class="form-control" id="txtMobile" placeholder="you@example.com">
+                            <input type="number" class="form-control" id="txtMobile" placeholder="Kuwait based mobile # only">
                         </div>
                         <div class="col-12">
                             <small class="text-muted">You're contact information is private and is
@@ -63,12 +62,16 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="txtDescription" class="form-label">Request Description</label>
+                            <label for="txtDescription" class="form-label">Request Description <span class="text-danger">*</span></label>
                             <textarea class="form-control" id="txtDescription" rows="4"
-                                placeholder="Please describe your request briefly" required></textarea>
+                                placeholder="Please describe your request briefly"></textarea>
                             <div class="invalid-feedback">
-                                Please enter your shipping address.
+                                Please enter description.
                             </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div id="captchaContainer" class="g-recaptcha"></div>
                         </div>
                     </div>
 
@@ -80,8 +83,10 @@
         </div>
     </main>
 
-    <footer><%- include('../partials/footer'); %></footer>
-
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+    
     <script>
         const ddService = $("#ddService");
         const txtName = $("#txtName");
@@ -89,6 +94,80 @@
         const txtMobile = $("#txtMobile");
         const txtDescription = $("#txtDescription");
         const btnSubmit = $("#btnSubmit");
+
+        let invalidFieldsExist = false;
+        let captcha = null;
+
+        const showInvalidFieldsAlert = ()=>{
+            const alert = dialogBuilder({
+                title: "Invalid Fields", 
+                body: `Please fill all required fields marked by <span class="text-danger">*</span>`, 
+                footer: null, 
+                closeTitle: "close", 
+                css: "modal-sm", 
+                onClose: (d) =>{
+                    d();
+                }, 
+                showCloseHeader: true
+            });
+
+            alert.modal.show();
+        };
+
+        btnSubmit.on("click", async ()=>{
+            const serviceId = parseInt(ddService.val());
+            const email = txtEmail.val();
+            const description = txtDescription.val();
+            const mobile = txtMobile.val();
+            const name = txtName.val();
+
+            if(serviceId === 0){
+                invalidFieldsExist = true;
+                ddService.addClass("is-invalid");
+            } else {
+                ddService.removeClass("is-invalid");
+            }
+            
+            if(!validateEmail(email)){
+                invalidFieldsExist = true;
+                txtEmail.addClass("is-invalid");
+            } else {
+                txtEmail.removeClass("is-invalid");
+            }
+
+            if(description === ""){
+                invalidFieldsExist = true;
+                txtDescription.addClass("is-invalid");
+            } else {
+                txtDescription.removeClass("is-invalid");
+            }
+
+            if(invalidFieldsExist){
+                showInvalidFieldsAlert();
+                invalidFieldsExist = false;
+            } else {
+                btnSubmit.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
+
+                const res = await post("/api/v1/service", {email, serviceId, description, mobile, name, captcha});
+                const bod = await res.json();
+
+                if(!res.ok){ alert(bod.message); return; }
+
+                window.location = `/services/verify-request?id=${bod.id}`;
+
+                btnSubmit.html(`Submit Request`).prop("disabled", "");
+            }
+        });
+
+        function onCaptchaLoaded(){
+            grecaptcha.render('captchaContainer', {
+                sitekey: '6LfHtdoZAAAAAJxtjaPSqyy4bX57G8YIx-ngomeW',
+                callback: (response)=>{
+                    captcha = response;
+                },
+                theme: 'dark'
+            });
+        }
     </script>
 </body>
 
