@@ -42,7 +42,7 @@ exports.verifyServiceOtp = async (req, res) => {
 
         sendMail({
             to: "anas@najaa.org",
-            subject: `A.N - New Request ${request.name || request.email}`,
+            subject: `A.N - New Request: ${request.name || request.email}`,
             text: `
             Hello Anas,
             New request was submitted from anas.najaa.org
@@ -69,7 +69,7 @@ exports.verifyServiceOtp = async (req, res) => {
 
         sendMail({
             to: request.email,
-            subject: `A.N - New Request ${request.name || request.email}`,
+            subject: `A.N - Request Forwarded`,
             text: `
             Dear ${request.name || request.email},
             Thank you!
