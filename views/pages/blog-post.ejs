@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-12">
                         <h1><%= pd.post.title %> </h1>
-                        <small data-bs-toggle="tooltip" data-bs-placement="top" title="<%= post.published_at_formated%>"
+                        <small data-bs-toggle="tooltip" data-bs-placement="top" title="<%= pd.post.published_at_formated%>"
                             class="text-muted">Published <%= pd.post.published_at_friendly %>
                         </small>
                     </div>
@@ -30,7 +30,7 @@
                     <div class="col-12 mb-4">
                         <small class="text-muted"><i>Tags:</i></small>
                         <% pd.post.tags.forEach(tag => { %>
-                        <%- include('../partials/blog-tag', {tag: pd.tag}); %>
+                        <%- include('../partials/blog-tag', {tag: tag}); %>
                         <%})%>
                     </div>
                     <%}%>
