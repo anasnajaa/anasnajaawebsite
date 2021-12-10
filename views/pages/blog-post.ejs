@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 
 <head>
-    <%- include('../partials/head'); %>
+    <%- include('../partials/head', {header: {title: pd.post.title, description: pd.post.custom_excerpt}}); %>
     <link rel="stylesheet" href="/libs/prism.css">
 </head>
 
