@@ -53,6 +53,7 @@ exports.libraryPage = async (req, res) => {
 	const count = await libraryModel.find(search).count();
 	const items = await libraryModel
 		.find(search)
+		.sort({date: 1})
 		.limit(l)
 		.skip((p - 1) * l)
 		.lean();
