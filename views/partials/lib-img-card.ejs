@@ -7,10 +7,10 @@
                     class="card-title text-light text-decoration-none"><%=item.title%>
                     <i class="fas fa-external-link-alt"></i>
                 </a><br />
-                <%if(item.tags !== undefined && item.tags !== null && item.tags.length > 0){%>
-                <%item.tags.forEach(tag=>{%>
-                <%- include('../partials/lib-tag', {tag}); %>
-                <%})%>
+                <%if(item.dTags !== undefined && item.dTags !== null && item.dTags.length > 0){%>
+                    <%item.dTags.forEach(tag=>{%>
+                    <%- include('../partials/lib-tag', {tag}); %>
+                    <%})%>
                 <%}%>
             </div>
         </div>

@@ -18,6 +18,18 @@ exports.servicePage = async (req, res) => {
 	return res.render("pages/services", { pd: { headerCard, services } });
 };
 
+libTagsCssResolver = (tag) => {
+  switch(tag){
+    case "education":   return "lib-green-dark";
+    case "business":    return "lib-blue-dark";
+    case "programming": return "lib-purple-dark";
+    case "react":       return "lib-blue-light";
+    case "memories":    return "lib-gray-dark";
+    case "leisure":     return "lib-pink-dark";
+    default:            return "";
+  }
+};
+
 exports.libraryPage = async (req, res) => {
 	let { p, l, t, tg } = req.query;
 	const { tag } = req.params;
@@ -34,16 +46,31 @@ exports.libraryPage = async (req, res) => {
 	if (l === 0 || l === NaN) l = 20;
 	if (p === 0 || p === NaN) p = 1;
 	if (t) search.type = t;
-	if (tg) search["tags.title"] = tg;
+	if (tg) search.tags = { $all: [tg]};
 
 	const types = await libraryModel.distinct("type").lean();
-	const tags = await libraryModel.distinct("tags.title").lean();
+	const tags = await libraryModel.distinct("tags").lean();
 	const count = await libraryModel.find(search).count();
 	const items = await libraryModel
 		.find(search)
 		.limit(l)
 		.skip((p - 1) * l)
 		.lean();
+
+	if(items !== undefined &&
+	   items !== null &&
+	   items.length > 0) {
+		for(i=0; i<items.length; i++){
+			const item = items[i];
+			item.dTags = [];
+			item.tags.forEach(tag => {
+				item.dTags.push({
+					title: tag,
+					color: libTagsCssResolver(tag)
+				})
+			});
+		}
+	}
 
 	res.render("pages/library", {
 		pd: {

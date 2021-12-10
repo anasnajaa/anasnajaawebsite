@@ -3,9 +3,9 @@
         <a href="<%=item.url%>" target="_blank" class="card-title text-dark mb-0 text-decoration-none">
             <%=item.title %> <i class="fas fa-external-link-alt"></i>
         </a>
-        <%if(item.tags !== undefined && item.tags !== null && item.tags.length > 0){%>
+        <%if(item.dTags !== undefined && item.dTags !== null && item.dTags.length > 0){%>
         <div class="w-100">
-            <%item.tags.forEach(tag=>{%>
+            <%item.dTags.forEach(tag=>{%>
             <%- include('../partials/lib-tag', {tag}); %>
             <%})%>
         </div>
