@@ -2,10 +2,21 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://anas.najaa.org</loc>
-    <lastmod>2021-10-08</lastmod>
+    <lastmod>2021-12-11</lastmod>
+    <image:image>
+      <image:loc>https://anas.najaa.org/img/logo.png</image:loc>
+    </image:image>
   </url>
-    <url>
-    <loc>https://anas.najaa.org/about</loc>
-    <lastmod>2021-10-08</lastmod>
+  <url>
+    <loc>https://anas.najaa.org/blog</loc>
+    <lastmod>2021-12-11</lastmod>
+  </url>
+  <url>
+    <loc>https://anas.najaa.org/services</loc>
+    <lastmod>2021-12-11</lastmod>
+  </url>
+  <url>
+    <loc>https://anas.najaa.org/library</loc>
+    <lastmod>2021-12-11</lastmod>
   </url>
 </urlset>
