@@ -27,33 +27,23 @@ exports.login = async (req, res, next) => {
 
 		if (!v.isEmail(username)) errors["username"] = ["Invalid Username"];
 		if (v.isEmpty(password)) errors["password"] = ["Required Field"];
-		if (Object.keys(errors).length) return res.status(402).json(errors);
+		if (Object.keys(errors).length) return res.status(422).json({ errors });
 
-		let user = {};
+		let user = await userModel.findOne({ username }).lean();
 
-		try {
-			user = await userModel.findOne({ username }).lean();
+		if (user === null) {
+			errors["username"] = ["Invalid Username"];
+			return res.status(422).json({ errors });
+		}
 
-			if (user === null) {
-				errors["username"] = ["Invalid Username"];
-				return res.status(402).json();
-			}
+		if (!user.isActive) {
+			errors["username"] = ["User is not active."];
+			return res.status(422).json({ errors });
+		}
 
-			if (!user.isActive) {
-				errors["username"] = ["User is not active."];
-				return res.status(402).json();
-			}
-
-			if (!passwordMatch(password, user.password)) {
-				errors["password"] = ["Invalid Password"];
-				return res.status(402).json();
-			}
-		} catch (error) {
-			return res.status(402).json({
-				title: "Error",
-				message: error,
-				type: "danger"
-			});
+		if (!passwordMatch(password, user.password)) {
+			errors["password"] = ["Invalid Password"];
+			return res.status(422).json({ errors });
 		}
 
 		const token = await generateToken(user);

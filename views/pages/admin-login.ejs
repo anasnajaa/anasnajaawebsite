@@ -14,18 +14,16 @@
     <main>
         <div class="container p-3 mt-5">
             <div class="row g-5">
-                <div class="col-4 mx-auto">
+                <div class="col-4 mx-auto" id="formLogin">
                     <div class="row g-3">
                         <div class="col-sm-12">
                             <label for="txtUsername" class="form-label">Username</label>
                             <input type="text" class="form-control" id="txtUsername">
-                            <div class="invalid-feedback"></div>
                         </div>
 
                         <div class="col-sm-12">
                             <label for="txtPassword" class="form-label">Password</label>
                             <input type="password" class="form-control" id="txtPassword">
-                            <div class="invalid-feedback"></div>
                         </div>
 
                         <div class="col-12">
@@ -49,6 +47,8 @@
         const txtPassword = $("#txtPassword");
         const txtUsername = $("#txtUsername");
         const btnSubmit = $("#btnSubmit");
+        const formLogin = $("#formLogin");
+        const captchaContainer = $("#captchaContainer");
 
         let invalidFieldsExist = false;
         let captcha = null;
@@ -57,16 +57,30 @@
             const username = txtUsername.val();
             const password = txtPassword.val();
 
+            const formKeys = {
+                username: txtUsername,
+                password: txtPassword,
+                captcha: captchaContainer
+            };
+
+            removeValidationMessages(formLogin);
+
             btnSubmit.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
 
             const res = await post("/api/v1/auth/login", {username, password, captcha, setCookie: true});
             const bod = await res.json();
 
-            btnSubmit.html(`Submit Request`).prop("disabled", "");
+            btnSubmit.html(`Login`).prop("disabled", "");
 
-            if(!res.ok){ alert(bod.message); return; }
+            const onSuccess = ()=>{
+                window.location = "/admin";
+            };
 
-            window.location = "/admin";
+            const onError = (status)=>{
+                if(status !== 422) alert(bod.message);
+            };
+
+            handleFormSubmit(res, bod, formLogin, formKeys, onSuccess, onError);
         });
 
         function onCaptchaLoaded(){

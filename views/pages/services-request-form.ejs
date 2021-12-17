@@ -22,7 +22,7 @@
                             see the verification email).
                         </p>
                     </div>
-                    <div class="row g-3">
+                    <div class="row g-3" id="formService">
                         <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6">
                             <label for="ddService" class="form-label">Service <span class="text-danger">*</span></label>
                             <select class="form-select" id="ddService" required>
@@ -94,6 +94,8 @@
         const txtMobile = $("#txtMobile");
         const txtDescription = $("#txtDescription");
         const btnSubmit = $("#btnSubmit");
+        const formService = $("#formService");
+        const captchaContainer = $("#captchaContainer");
 
         let invalidFieldsExist = false;
         let captcha = null;
@@ -121,42 +123,33 @@
             const mobile = txtMobile.val();
             const name = txtName.val();
 
-            if(serviceId === 0){
-                invalidFieldsExist = true;
-                ddService.addClass("is-invalid");
-            } else {
-                ddService.removeClass("is-invalid");
-            }
-            
-            if(!validateEmail(email)){
-                invalidFieldsExist = true;
-                txtEmail.addClass("is-invalid");
-            } else {
-                txtEmail.removeClass("is-invalid");
-            }
+            const formKeys = {
+                serviceId: ddService,
+                email: txtEmail,
+                description: txtDescription,
+                mobile: txtMobile,
+                name: txtName,
+                captcha: captchaContainer
+            };
 
-            if(description === ""){
-                invalidFieldsExist = true;
-                txtDescription.addClass("is-invalid");
-            } else {
-                txtDescription.removeClass("is-invalid");
-            }
+            removeValidationMessages(formService);
 
-            if(invalidFieldsExist){
-                showInvalidFieldsAlert();
-                invalidFieldsExist = false;
-            } else {
-                btnSubmit.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
+            btnSubmit.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
 
-                const res = await post("/api/v1/service", {email, serviceId, description, mobile, name, captcha});
-                const bod = await res.json();
+            const res = await post("/api/v1/service", {email, serviceId, description, mobile, name, captcha});
+            const bod = await res.json();        
 
-                if(!res.ok){ alert(bod.message); return; }
+            btnSubmit.html(`Submit Request`).prop("disabled", "");
 
+            const onSuccess = ()=>{
                 window.location = `/services/verify-request?id=${bod.id}`;
+            };
 
-                btnSubmit.html(`Submit Request`).prop("disabled", "");
-            }
+            const onError = (status)=>{
+                if(status !== 422) alert(bod.message);
+            };
+
+            handleFormSubmit(res, bod, formService, formKeys, onSuccess, onError);     
         });
 
         function onCaptchaLoaded(){

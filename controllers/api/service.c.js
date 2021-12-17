@@ -13,7 +13,7 @@ exports.verifyServiceOtp = async (req, res, next) => {
 
 		if (v.isEmpty(otp)) errors["otp"] = ["Required Field"];
 
-		if (Object.keys(errors).length) return res.status(402).json(errors);
+		if (Object.keys(errors).length) return res.status(402).json({ errors });
 
 		const request = await serviceModel.findById(requestId);
 
@@ -118,7 +118,7 @@ exports.newServiceRequest = async (req, res, next) => {
 			errors["captcha"] = ["Captcha is not valid, please try again"];
 		}
 
-		if (Object.keys(errors).length) return res.status(402).json(errors);
+		if (Object.keys(errors).length) return res.status(422).json({ errors });
 
 		const otp = Math.floor(Math.random() * 9999);
 
@@ -139,21 +139,21 @@ exports.newServiceRequest = async (req, res, next) => {
 			to: email,
 			subject: "A.N - Request Received",
 			text: `Dear ${name || email},
-        Your request has been submitted successfully. 
-        To proceed further, please verify your identity by using the following OTP code: 
-        ${otp}
-        Regards,
-        Anas Najaa`,
+            Your request has been submitted successfully. 
+            To proceed further, please verify your identity by using the following OTP code: 
+            ${otp}
+            Regards,
+            Anas Najaa`,
 			html: `
-        Dear ${name || email},<br/>
-        Your request has been submitted successfully. <br/>
-        To proceed further, please verify your identity by using the following OTP code: <br/r>
-        <b>${otp}</b><br/>
-        Regards,<br/>
-        Anas Najaa`
+            Dear ${name || email},<br/>
+            Your request has been submitted successfully. <br/>
+            To proceed further, please verify your identity by using the following OTP code: <br/r>
+            <b>${otp}</b><br/>
+            Regards,<br/>
+            Anas Najaa`
 		});
 
-		return res.status(200).json({ id: newServiceRequest._id });
+		return res.json({ id: newServiceRequest._id });
 	} catch (err) {
 		next(err);
 	}
