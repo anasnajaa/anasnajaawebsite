@@ -1,12 +1,15 @@
 const express = require("express");
 
 const smsController = require("../controllers/api/sms.c");
-const booksController = require("../controllers/api/books.c");
-const linksController = require("../controllers/api/links.c");
 const blogController = require("../controllers/api/blog.c");
 const emailController = require("../controllers/api/email.c");
 const otherController = require("../controllers/api/other.c");
 const serviceController = require("../controllers/api/service.c");
+const filesController = require("../controllers/api/files.c");
+const libraryController = require("../controllers/api/library.c");
+const authController = require("../controllers/api/auth.c");
+
+const { isAdmin, isLoggedIn, isLoggedOut } = require("../middleware/hasAuth");
 
 const router = express.Router();
 
@@ -33,25 +36,21 @@ router.get("/blog/pages/slug/:slug", blogController.getPageBySlug);
 router.get("/blog/settings", blogController.getBlogSettings);
 router.get("/blog/tags", blogController.getTags);
 
-// Books
-router.get("/books", booksController.getBooks);
-router.get("/books/:recordId", booksController.getBookById);
-//router.delete("/books/:recordId", booksController.deleteBook);
-//router.post("/books", booksController.addBook);
-
-// Links
-router.get("/links", linksController.getLinks);
-router.get("/links/:recordId", linksController.getLinkById);
-//router.delete("/links/:recordId", linksController.deleteLinkById);
-//router.post("/links", linksController.addLink);
+// Library
+router.get("/library", libraryController.getLibraryItems);
+router.post("/library", isAdmin, libraryController.addLibItem);
+router.get("/library/tags", libraryController.getTags);
+router.get("/library/types", libraryController.getTypes);
+router.get("/library/:recordId", libraryController.getLibItemById);
+router.delete("/library/:recordId", isAdmin, libraryController.deleteLibItemById);
 
 // SMS
 router.post("/hooks/sms/update", smsController.updateMessageStatus);
-//router.get("/sms/test", smsController.sendTestMessage);
-router.get("/sms", smsController.getMessages);
+router.get("/sms/test", isAdmin, smsController.sendTestMessage);
+router.get("/sms", isAdmin, smsController.getMessages);
 
 // Email
-router.get("/email/test", emailController.testEmail);
+router.get("/email/test", isAdmin, emailController.testEmail);
 
 // Other
 router.get("/awake", otherController.awake);
@@ -60,5 +59,12 @@ router.get("/awake", otherController.awake);
 // Service
 router.post("/service", serviceController.newServiceRequest);
 router.post("/service/:requestId/verify", serviceController.verifyServiceOtp);
+
+// Files
+router.post("/admin/files/upload", isAdmin, filesController.uploadFile);
+
+// Auth
+router.post("/auth/login", isLoggedOut, authController.login);
+router.post("/auth/logout", isLoggedIn, authController.logout);
 
 module.exports = router;
