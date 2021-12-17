@@ -21,6 +21,13 @@
                     <a href="/library" class="<%=page==="library" ? "active": ""%> nav-link">Library</a>
                 </li>
             </ul>
+            <div class="d-flex">
+                <%if(user !== undefined && user !== null){%>
+                    <a href="/admin" class="btn btn-outline-success">Admin Panel</a>
+                <%}else{%>
+                    <a href="/login" class="btn btn-outline-dark">Login</a>
+                <%}%>
+            </div>
         </div>
     </div>
 </nav>

@@ -7,7 +7,7 @@
 
 <body>
     <header>
-        <%- include('../partials/navigation', {page: "services"}); %>
+        <%- include('../partials/navigation', {page: "services", user: pd.user}); %>
         <script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoaded&render=explicit" async defer></script>
     </header>
 
@@ -161,11 +161,11 @@
 
         function onCaptchaLoaded(){
             grecaptcha.render('captchaContainer', {
-                sitekey: '6LfHtdoZAAAAAJxtjaPSqyy4bX57G8YIx-ngomeW',
+                sitekey: '<%=pd.googleSiteKey%>',
                 callback: (response)=>{
                     captcha = response;
                 },
-                theme: 'dark'
+                theme: 'light'
             });
         }
     </script>
