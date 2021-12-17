@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head', {header: {title: "Dashboard", description: ""}}); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/navigation-admin', {page: "home", user: pd.user}); %>
+    </header>
+    <main>
+        <div class="container my-4 py-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Hello, <%= pd.user.username %></h1>
+                    Your roles:
+                    <ul>
+                    <%if(pd.user.roles !== undefined && pd.user.roles !== null && pd.user.roles.length > 0){%>
+                        <%pd.user.roles.forEach(role => {%>
+                            <li class="text-capitalize"><%=role%></li>
+                        <%})%>
+                    <%}%>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+
+    </script>
+</body>
+
+</html>

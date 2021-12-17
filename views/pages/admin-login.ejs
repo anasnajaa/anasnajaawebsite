@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head', {header: {title: "Login", description: ""}}); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/navigation', {page: "", user: pd.user}); %>
+        <script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoaded&render=explicit" async defer></script>
+    </header>
+
+    <main>
+        <div class="container p-3 mt-5">
+            <div class="row g-5">
+                <div class="col-4 mx-auto">
+                    <div class="row g-3">
+                        <div class="col-sm-12">
+                            <label for="txtUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="txtUsername">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="col-sm-12">
+                            <label for="txtPassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="txtPassword">
+                            <div class="invalid-feedback"></div>
+                        </div>
+
+                        <div class="col-12">
+                            <div id="captchaContainer" class="g-recaptcha"></div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <button class="w-100 btn btn-primary btn-lg" id="btnSubmit">Login</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+    
+    <script>
+        const txtPassword = $("#txtPassword");
+        const txtUsername = $("#txtUsername");
+        const btnSubmit = $("#btnSubmit");
+
+        let invalidFieldsExist = false;
+        let captcha = null;
+
+        btnSubmit.on("click", async ()=>{
+            const username = txtUsername.val();
+            const password = txtPassword.val();
+
+            btnSubmit.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
+
+            const res = await post("/api/v1/auth/login", {username, password, captcha, setCookie: true});
+            const bod = await res.json();
+
+            btnSubmit.html(`Submit Request`).prop("disabled", "");
+
+            if(!res.ok){ alert(bod.message); return; }
+
+            window.location = "/admin";
+        });
+
+        function onCaptchaLoaded(){
+            grecaptcha.render('captchaContainer', {
+                sitekey: '<%=pd.googleSiteKey%>',
+                callback: (response)=>{
+                    captcha = response;
+                },
+                theme: 'light'
+            });
+        }
+    </script>
+</body>
+
+</html>

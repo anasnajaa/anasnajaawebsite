@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head', {header: {title: "Library Manager", description: ""}}); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/navigation-admin', {page: "library", user: pd.user}); %>
+    </header>
+    <main>
+        <div class="container my-4 py-5">
+            <div class="row">
+                <div class="col-12">
+                    <div class="mb-3">
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <td>Thumb</td>
+                                    <td>Title</td>
+                                    <td>Date</td>
+                                    <td>Tags</td>
+                                </tr>
+                            </thead>
+                            <tbody id="libTable">
+                                
+                            </tbody>
+                        </table>
+                        <label for="fileInput" class="form-label">Upload File</label>
+                        <input class="form-control" type="file" id="fileInput">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const uploadImage = async ()=>{
+            const fileInput = $("#fileInput");
+            const libTable = $("#libTable");
+
+            fileInput.on("change", async ()=>{
+                const file = fileInput[0].files[0];
+
+                const res = await uploadFile("image", file);
+                const bod = await res.json();
+
+                console.log(bod);
+            });
+        };
+        uploadImage();
+    </script>
+</body>
+
+</html>
