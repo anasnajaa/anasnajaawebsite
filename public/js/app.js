@@ -101,3 +101,16 @@ const post = (url, data) => {
     };
     return fetch(url, requestOptions).catch(error => console.log("api-error", error));
 };
+
+const uploadFile = (type, fileData) => {
+    const formData = new FormData();
+    formData.append("file", fileData);
+    const queryParams = { type };
+    
+    return fetch(`/api/v1/admin/upload-file?${new URLSearchParams(queryParams)}`, {
+        method: 'POST',
+        body: formData,
+        redirect: "follow",
+        credentials: "include",
+    });
+};
