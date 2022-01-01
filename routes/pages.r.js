@@ -30,6 +30,10 @@ router.get("/login", isLoggedOut, adminController.login);
 router.get("/admin", isLoggedIn, adminController.dashboard);
 router.get("/admin/profile", isLoggedIn, adminController.profile);
 router.get("/admin/logout", isLoggedIn, adminController.logout);
+
 router.get("/admin/library", isAdmin, adminController.library);
+router.get("/admin/library/view", isAdmin, adminController.libraryView);
+router.get("/admin/library/edit", isAdmin, adminController.libraryEdit);
+router.get("/admin/library/delete", isAdmin, adminController.libraryDelete);
 
 module.exports = router;
