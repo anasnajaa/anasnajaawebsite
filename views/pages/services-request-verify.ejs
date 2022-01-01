@@ -54,7 +54,7 @@
 
             btnVerify.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
 
-            const res = await post(`/api/v1/service/${requestId}/verify`, {otp});
+            const res = await api.verifyServiceRequest({requestId, otp});
             const bod = await res.json();
 
             if(!res.ok){ alert(bod.message); return; }

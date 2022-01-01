@@ -42,26 +42,21 @@
                         </div>
                     </div>
                     <%})%>
-                            </div>
-                            <%} else { %>
-                            <h2>No Posts</h2>
-                            <%}%>
-                        <%- include('../partials/pagination', {pagination: pd.pagination}); %>
-                        </div>
-                    </div>
                 </div>
+                <%} else { %>
+                    <h2>No Posts</h2>
+                <%}%>
+                <%- include('../partials/pagination', {pagination: pd.pagination}); %>
             </div>
+        </div>
+    </div>
 
-            <footer>
-                <%- include('../partials/footer'); %>
-            </footer>
-            <script>
-                var tooltipTriggerList = [].slice.call(document.querySelectorAll(
-                    '[data-bs-toggle="tooltip"]'))
-                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                    return new bootstrap.Tooltip(tooltipTriggerEl)
-                })
-            </script>
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+    <script>
+        util.initTooltips();
+    </script>
 </body>
 
 </html>

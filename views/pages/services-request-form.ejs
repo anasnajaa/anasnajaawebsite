@@ -97,24 +97,7 @@
         const formService = $("#formService");
         const captchaContainer = $("#captchaContainer");
 
-        let invalidFieldsExist = false;
         let captcha = null;
-
-        const showInvalidFieldsAlert = ()=>{
-            const alert = dialogBuilder({
-                title: "Invalid Fields", 
-                body: `Please fill all required fields marked by <span class="text-danger">*</span>`, 
-                footer: null, 
-                closeTitle: "close", 
-                css: "modal-sm", 
-                onClose: (d) =>{
-                    d();
-                }, 
-                showCloseHeader: true
-            });
-
-            alert.modal.show();
-        };
 
         btnSubmit.on("click", async ()=>{
             const serviceId = parseInt(ddService.val());
@@ -132,11 +115,11 @@
                 captcha: captchaContainer
             };
 
-            removeValidationMessages(formService);
+            validator.removeValidationMessages(formService);
 
             btnSubmit.html(`<i class="fas fa-cog fa-spin"></i> Loading...`).prop("disabled", "disabled");
 
-            const res = await post("/api/v1/service", {email, serviceId, description, mobile, name, captcha});
+            const res = await api.addServiceRequest({email, serviceId, description, mobile, name, captcha});
             const bod = await res.json();        
 
             btnSubmit.html(`Submit Request`).prop("disabled", "");
@@ -149,7 +132,7 @@
                 if(status !== 422) alert(bod.message);
             };
 
-            handleFormSubmit(res, bod, formService, formKeys, onSuccess, onError);     
+            validator.handleFormSubmit(res, bod, formService, formKeys, onSuccess, onError);     
         });
 
         function onCaptchaLoaded(){
