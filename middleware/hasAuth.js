@@ -23,7 +23,7 @@ const retrieveJwtToken = (req, res) => {
 				removeTokenCookie(res);
 				reject(new Error("Auth_Expired"));
 			} catch (err) {
-				if (err.message === "invalid signature") removeTokenCookie(res);
+				if (err.message === "invalid signature" || err.message === "jwt expired") removeTokenCookie(res);
 				reject(err);
 			}
 		})();
