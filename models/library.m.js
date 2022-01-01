@@ -3,12 +3,14 @@ const Schema = mongoose.Schema;
 
 const schema = new Schema(
 	{
-		title: { type: String, required: false },
-		thumb: { type: String, required: true },
-		date: { type: Date, required: false },
-		url: { type: String, required: true },
+		title: { type: String, required: true },
+		type: { type: String, required: true },
+		date: { type: Date, required: true },
+		url: { type: String, required: false },
+		img: { type: String, required: false },
+		thumb: { type: String, required: false },
 		tags: { type: Array, required: false },
-		type: { type: String, required: true }
+		content: { type: String, required: false },
 	},
 	{ timestamps: false, collection: "library" }
 );
