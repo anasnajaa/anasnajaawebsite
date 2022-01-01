@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head-admin', {header: {title: "Library Manager"}}); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/navigation-admin', {page: "library", user: pd.user}); %>
+    </header>
+    <main id="main">
+        <div class="container my-4 py-5">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/admin/library">Library</a></li>
+                            <li class="breadcrumb-item active" id="breadCrumbTitle">Details</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-12">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col"></th>
+                            <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th scope="row">Thumb</th>
+                                <td id="thumb"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Title</th>
+                                <td id="title"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">URL</th>
+                                <td id="url"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Type</th>
+                                <td id="type" class="text-capitalize"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tags</th>
+                                <td id="tags"></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Date</th>
+                                <td id="date"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const page = async() =>{
+            const main = $("#main");
+            const breadCrumbTitle = $("#breadCrumbTitle");
+            const thumb = $("#thumb");
+            const title = $("#title");
+            const url   = $("#url");
+            const type  = $("#type");
+            const tags  = $("#tags");
+            const date  = $("#date");
+
+            let id = 0;
+            const params = util.splitUrlParams(window.location.search);
+            if(params){
+                id = params.params.id;
+            }
+
+            util.showLoading(main);
+            const res = await api.library.getItemById(id);
+            const body = await res.json();
+            util.hideLoading(main);
+
+            if(!res.ok){ return;}
+
+            const item = body.item;
+
+            let tmplThumb = "";
+            let tmplTags = "";
+            let tmplLink = "";
+            
+            const dateAdd = moment(item.date);
+            const dateAddF = util.localizeMomentDateTime("en", dateAdd, true);
+
+            date.html(dateAddF);
+
+            if(item.thumb !== undefined &&
+            item.thumb !== null &&
+            item.thumb !== ""){
+                tmplThumb = `
+                <a href="${item.img || ""}" target="_blank">
+                    <img class="img-fluid thumbnail img-thumbnail" style="width:200px;height:200px;" src="${item.thumb}" />
+                </a>`;
+            } else {
+                tmplThumb = `<img class="img-fluid thumbnail img-thumbnail" style="width:200px;height:200px;" src="/img/placeholder.jpg" />`;
+            }
+            
+            if(item.dTags !== undefined &&
+            item.dTags !== null &&
+            item.dTags.length > 0){
+                item.dTags.forEach(tag => {
+                    tmplTags += `<span class="badge m-1 cursor-pointer ${tag.color}">${tag.title}</span>`;
+                });
+                tags.html(tmplTags);
+            }
+
+            if(item.url !== undefined &&
+            item.url !== null &&
+            item.url !== ""){
+                url.html(`<a href="${item.url}">${item.url}</a>`);
+            }
+            
+            title.html(item.title);
+            breadCrumbTitle.html(item.title);
+            type.html(item.type);
+            thumb.html(tmplThumb);
+            
+        };
+        page();
+    </script>
+</body>
+
+</html>

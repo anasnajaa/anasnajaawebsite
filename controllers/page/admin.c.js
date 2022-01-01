@@ -17,6 +17,30 @@ exports.library = async (req, res, next) => {
 	}
 };
 
+exports.libraryView = async (req, res, next) => {
+	try {
+		return res.render("pages/admin-library-view", { pd: { user: req.user } });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.libraryEdit = async (req, res, next) => {
+	try {
+		return res.render("pages/admin-library-edit", { pd: { user: req.user } });
+	} catch (err) {
+		next(err);
+	}
+};
+
+exports.libraryDelete = async (req, res, next) => {
+	try {
+		return res.render("pages/admin-library-delete", { pd: { user: req.user } });
+	} catch (err) {
+		next(err);
+	}
+};
+
 exports.login = async (req, res, next) => {
 	try {
 		return res.render("pages/admin-login", {

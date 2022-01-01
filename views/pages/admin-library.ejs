@@ -2,33 +2,88 @@
 <html lang="en" dir="ltr">
 
 <head>
-    <%- include('../partials/head', {header: {title: "Library Manager", description: ""}}); %>
+    <%- include('../partials/head-admin', {header: {title: "Library Manager"}}); %>
 </head>
 
 <body>
     <header>
         <%- include('../partials/navigation-admin', {page: "library", user: pd.user}); %>
     </header>
-    <main>
+    <main id="main">
         <div class="container my-4 py-5">
+            <div class="row">
+                <div class="col-2 mb-2">
+                    <button type="button" class="btn btn-success btn-sm">Add</button>
+                </div>
+                <div class="col-4 mb-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-sm" id="txtSearch" placeholder="Search">
+                        <button id="btnDropDownSearch" class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Title</button>
+                        <ul class="dropdown-menu">
+                            <li><button id="btnSearchByTitle" class="dropdown-item">Title</button></li>
+                            <li><button id="btnSearchByUrl" class="dropdown-item">URL</button></li>
+                        </ul>
+                        <button class="btn btn-outline-secondary btn-sm" id="btnSearch"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="col-2 mb-2">
+                    <select id="selectType" class="form-select form-select-sm">
+                        <option value="" selected>Type</option>
+                    </select>
+                </div>
+                <div class="col-2 mb-2">
+                    <select id="selectTag" class="form-select form-select-sm">
+                        <option value="" selected>Tag</option>
+                    </select>
+                </div>
+                <div class="col-2 mb-2">
+                    <select id="selectOrderBy" class="form-select form-select-sm">
+                        <option value="" selected>Order By</option>
+                        <option value="added-desc">Added - Desc</option>
+                        <option value="added-asc">Added - Asc</option>
+
+                        <option value="date-desc">Date - Desc</option>
+                        <option value="date-asc">Date - Asc</option>
+
+                        <option value="title-desc">Title - Desc</option>
+                        <option value="title-asc">Title - Asc</option>
+                        
+                        <option value="type-desc">Type - Desc</option>
+                        <option value="type-asc">Type - Asc</option>
+                    </select>
+                </div>
+            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="mb-3">
                         <table class="table table-sm table-striped">
+                            <caption id="recordsCountContainer"></caption>
                             <thead>
                                 <tr>
                                     <td>Thumb</td>
+                                    <td>Type</td>
                                     <td>Title</td>
                                     <td>Date</td>
                                     <td>Tags</td>
+                                    <td>Link</td>
                                 </tr>
                             </thead>
-                            <tbody id="libTable">
-                                
-                            </tbody>
+                            <tbody id="libTable"></tbody>
                         </table>
-                        <label for="fileInput" class="form-label">Upload File</label>
-                        <input class="form-control" type="file" id="fileInput">
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <div class="row g-1">
+                        <div class="col-auto">
+                            <div id="paginationContainer"></div>
+                        </div>
+                        <div class="col-auto">
+                            <select id="selectRecordsPerPage" class="form-select form-select-sm">
+                                <option selected value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="30">30</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,20 +91,237 @@
     </main>
 
     <script>
-        const uploadImage = async ()=>{
+        const libraryPage = async ()=>{
+            const main = $("#main");
             const fileInput = $("#fileInput");
             const libTable = $("#libTable");
+            const selectRecordsPerPage = $("#selectRecordsPerPage");
+            const paginationContainer = $("#paginationContainer");
+            const recordsCountContainer = $("#recordsCountContainer");
 
-            fileInput.on("change", async ()=>{
-                const file = fileInput[0].files[0];
+            const selectType = $("#selectType");
+            const selectTag = $("#selectTag");
+            const selectOrderBy = $("#selectOrderBy");
 
-                const res = await uploadFile("image", file);
-                const bod = await res.json();
+            const btnSearch = $("#btnSearch");
+            const txtSearch = $("#txtSearch");
 
-                console.log(bod);
+            const btnDropDownSearch = $("#btnDropDownSearch");
+            const btnSearchByTitle = $("#btnSearchByTitle");
+            const btnSearchByUrl = $("#btnSearchByUrl");
+
+            let page = 1;
+            let limit = 10; 
+            let type = ""; 
+            let tag = "";
+            let orderBy = "";
+            let isInitLoad = true;
+            let searchTitle = "";
+            let searchUrl = "";
+            let searchBy = "title";
+
+            util.showLoading(main);
+
+            const resLibTags = await api.library.getTags();
+            const bodLibTags = await resLibTags.json();
+
+            const resetAndSearch = () => {
+                page = 1;
+                util.paginationDestroy(paginationContainer);
+                isInitLoad = true;
+                getItems();
+            };
+
+            if(resLibTags.ok &&
+            bodLibTags.tags !== undefined &&
+            bodLibTags.tags !== null &&
+            bodLibTags.tags.length > 0) {
+                bodLibTags.tags.forEach(tag => {
+                    $(`<option class="text-capitalize" value="${tag}">${tag}</option>`).appendTo(selectTag);
+                });
+
+                selectTag.on("change", () => {
+                    tag = selectTag.val();
+                    resetAndSearch();
+                });
+            }
+
+            const resLibTypes = await api.library.getTypes();
+            const bodLibTypes = await resLibTypes.json();
+
+            if(resLibTypes.ok &&
+            bodLibTypes.types !== undefined &&
+            bodLibTypes.types !== null &&
+            bodLibTypes.types.length > 0){
+                bodLibTypes.types.forEach(type => {
+                    $(`<option class="text-capitalize" value="${type}">${type}</option>`).appendTo(selectType);
+                });
+
+                selectType.on("change", () => {
+                    type = selectType.val();
+                    resetAndSearch();
+                });
+            }
+
+            util.hideLoading(main);
+
+            const tmplRow = (item) => {
+                let tmplThumb = "";
+                let tmplTags = "";
+                let tmplLink = "";
+                
+                const dateAdd = moment(item.date);
+                const dateAddF = util.localizeMomentDateTime("en", dateAdd, true);
+
+                if(item.thumb !== undefined &&
+                    item.thumb !== null &&
+                    item.thumb !== ""){
+                    tmplThumb = `<img class="img-fluid thumbnail img-thumbnail" style="width:50px;height:50px;" src="${item.thumb}" />`;
+                } else {
+                    tmplThumb = `<img class="img-fluid thumbnail img-thumbnail" style="width:50px;height:50px;" src="/img/placeholder.jpg" />`;
+                }
+                
+                if(item.dTags !== undefined &&
+                item.dTags !== null &&
+                item.dTags.length > 0){
+                    item.dTags.forEach(tag => {
+                        tmplTags += `<span class="badge m-1 cursor-pointer ${tag.color}">${tag.title}</span>`;
+                    });
+                }
+
+                if(item.url !== undefined &&
+                item.url !== null &&
+                item.url !== ""){
+                    tmplLink = `<a href="${item.url}"><i class="fas fa-external-link-alt"></i></a>`;
+                }
+
+                return `
+                <tr>
+                    <td>${tmplThumb}</td>
+                    <td class="text-capitalize">${item.type}</td>
+                    <td>${item.title}</td>
+                    <td>${dateAddF}</td>
+                    <td>${tmplTags}</td>
+                    <td>${tmplLink}</td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="/admin/library/view?id=${item._id}" class="btn btn-primary btn-sm">view</a>
+                            <a href="/admin/library/edit?id=${item._id}" class="btn btn-success btn-sm">edit</a>
+                            <button id="${item.guid}_delete" class="btn btn-danger btn-sm">delete</button>
+                        </div>
+                    </td>
+                </tr>`;
+            };
+
+            const getItems = async() => {
+                util.showLoading(main);
+
+                const res = await api.library.getItems({page, limit, type, tag, orderBy, searchTitle, searchUrl});
+                const body = await res.json();
+
+                util.hideLoading(main);
+
+                libTable.html("");
+
+                let count = body.count || 0;
+
+                if(body.records !== undefined &&
+                body.records !== null &&
+                body.records.length > 0){
+                    const records = body.records;
+                    records.forEach(record => {
+                        record.guid = util.GUID();
+                        $(tmplRow(record)).appendTo(libTable);
+
+                        $(`#${record.guid}_delete`).on("click", async () => {
+                            dialogs.confirmDialog({
+                                title: "Confirm Delete",
+                                message: "Are you sure you want to delete this record?",
+                                action: "Yes",
+                                onConfirm: async (d) => {
+                                    util.showLoading(main);
+                                    const deleteRes = await api.library.deleteItemById(record._id);
+                                    const deleteBod = await deleteRes.json();
+                                    util.hideLoading(main);
+                                    toasts.recordDeleted();
+                                    d();
+                                    getItems();
+                                },
+                                onCancel: (d) => {
+                                    d();
+                                }
+                            })
+                        });
+                    });
+                }
+                
+                util.paginationInit(paginationContainer, count, limit, page,
+                    (newPage) => {
+                        page = newPage;
+                        if (isInitLoad) {
+                            isInitLoad = false;
+                        } else {
+                            getItems();
+                        }
+                    }
+                );
+
+                recordsCountContainer.html(`Records Count: ${count}`);
+            };
+
+            getItems();
+
+            selectRecordsPerPage.on("change", () => {
+                limit = selectRecordsPerPage.val();
+                resetAndSearch();
             });
+
+            selectOrderBy.on("change", () => {
+                orderBy = selectOrderBy.val();
+                resetAndSearch();
+            });
+
+            btnSearchByTitle.on("click", () => {
+                searchBy = "title";
+                btnDropDownSearch.html("Title");
+            });
+
+            btnSearchByUrl.on("click", () => {
+                searchBy = "url";
+                btnDropDownSearch.html("URL");
+            });
+
+            const search = () => {
+                if(searchBy === "title"){
+                    searchTitle = txtSearch.val();
+                    searchUrl = "";
+                } else if (searchBy === "url"){
+                    searchTitle = "";
+                    searchUrl = txtSearch.val();
+                }
+                resetAndSearch();
+            };
+
+            util.attachEnterEvent(txtSearch, ()=>{
+                search();
+            });
+
+            btnSearch.on("click", () => {
+                search();
+            });
+
+            // <label for="fileInput" class="form-label">Upload File</label>
+            // <input class="form-control" type="file" id="fileInput">
+            // fileInput.on("change", async ()=>{
+            //     const file = fileInput[0].files[0];
+
+            //     const res = await api.uploadFile("image", file);
+            //     const bod = await res.json();
+
+            //     console.log(bod);
+            // });
         };
-        uploadImage();
+        libraryPage();
     </script>
 </body>
 
