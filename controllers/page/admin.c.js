@@ -41,6 +41,14 @@ exports.libraryDelete = async (req, res, next) => {
 	}
 };
 
+exports.libraryAdd = async(req,res, next) => {
+	try {
+		return res.render("pages/admin-library-add", { pd: { user: req.user } });
+	} catch (err) {
+		next(err);
+	}
+};
+
 exports.login = async (req, res, next) => {
 	try {
 		return res.render("pages/admin-login", {

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <%- include('../partials/head-admin', {header: {title: "Library Manager"}}); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../partials/navigation-admin', {page: "library", user: pd.user}); %>
+    </header>
+    <main id="main">
+        <div class="container my-4 py-5">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/admin/library">Library</a></li>
+                            <li class="breadcrumb-item active">Add</li>
+                        </ol>
+                    </nav>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label for="txtTitle" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="txtTitle">
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtContent" class="form-label">Content</label>
+                            <textarea class="form-control" id="txtContent" rows="3"></textarea>
+                        </div>
+                        <div class="col-12 mb-3">
+                            <label for="txtUrl" class="form-label">URL</label>
+                            <input type="url" class="form-control" id="txtUrl">
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label for="dateAdded" class="form-label">Date</label>
+                            <input class="form-control" type="datetime-local" id="dateAdded">
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label" for="selectType">Type:</label>
+                            <select id="selectType" class="form-control"></select>
+                        </div>
+                        <div class="col-12 mb-2">
+                            <label class="form-label" for="selectTag">Tags:</label>
+                            <select id="selectTag" class="form-control" multiple="multiple"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-12 col-lg-6 col-xl-6">
+                    <div class="row g-1">
+                        <div class="col-12 mb-2 imgArea">
+                            <label for="fileInput" class="form-label">Image/Thumbnail</label>
+                            <input class="form-control" type="file" id="fileInput">
+                        </div>
+                        <div class="col-6 mb-2 imgArea">
+                            <small class="mb-0 text-muted">Thumbnail:</small>
+                            <img id="imgThumbPreview" class="rounded img-thumbnail img-fluid" src="/img/placeholder.jpg" />
+                            <p class="text-center" id="thumbNotes"></p>
+                        </div>
+                        <div class="col-6 mb-2 imgArea">
+                            <small class="mb-0 text-muted">Original:</small>
+                            <img id="imgOriginalPreview" class="rounded img-thumbnail img-fluid" src="/img/placeholder.jpg" />
+                            <p class="text-center" id="originalNotes"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mt-2">
+                    <button id="btnSave" class="btn btn-primary btn-outline btn-sm">Save</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer-admin'); %>
+    </footer>
+
+    <script>
+        const page = async () => {
+            const main                  = $("#main");
+            const selectTags            = $("#selectTag");
+            const selectType            = $("#selectType");
+            const txtTitle              = $("#txtTitle");
+            const txtUrl                = $("#txtUrl");
+            const dateAdded             = $("#dateAdded");
+            const fileInput             = $("#fileInput");
+            const containerImages       = $("#containerImages");
+            const imgArea               = $(".imgArea");
+            const imgThumbPreview       = $("#imgThumbPreview");
+            const imgOriginalPreview    = $("#imgOriginalPreview");
+            const thumbNotes            = $("#thumbNotes");
+            const originalNotes         = $("#originalNotes");
+            const btnSave               = $("#btnSave");
+            const txtContent            = $("#txtContent");
+
+            let tagsList = [];
+            let typesList = [];
+            let imgUrl = null;
+            let thumbUrl = null;
+
+            util.showLoading(main);
+
+            const resLibTags = await api.library.getTags();
+            const bodLibTags = await resLibTags.json();
+
+            const resLibTypes = await api.library.getTypes();
+            const bodLibTypes = await resLibTypes.json();
+
+            util.hideLoading(main);
+
+            if(resLibTags.ok &&
+            bodLibTags.tags !== undefined &&
+            bodLibTags.tags !== null &&
+            bodLibTags.tags.length > 0) {
+                bodLibTags.tags.forEach(tag => {
+                    tagsList.push({
+                        id: tag,
+                        text: tag
+                    });
+                });
+
+                selectTags.select2({
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    data: tagsList
+                });
+            }
+
+            if(resLibTypes.ok &&
+            bodLibTypes.types !== undefined &&
+            bodLibTypes.types !== null &&
+            bodLibTypes.types.length > 0){
+                bodLibTypes.types.forEach(type => {
+                    typesList.push({
+                        id: type,
+                        text: type
+                    });
+                });
+
+                selectType.select2({
+                    tags: true,
+                    tokenSeparators: [',', ' '],
+                    data: typesList
+                });
+            }
+
+            btnSave.on("click", async () => {
+                const title     = txtTitle.val();
+                const type      = selectType.val();
+                const url       = txtUrl.val();
+                const tags      = selectTags.val(); 
+                const date      = dateAdded.val(); 
+                const content   = txtContent.val();
+                const img       = imgUrl;
+                const thumb     = thumbUrl;
+
+                util.showLoading(main);
+
+                const res = await api.library.addItem({
+                    title, type, url, tags, date, content, img, thumb
+                });
+                const bod = await res.json();
+
+                util.hideLoading(main);
+
+                if(res.ok){
+                    util.setFlashMessage({
+                        variation: "toast", 
+                        title: "Item Added", 
+                        message: null, 
+                        type: "success"
+                    });
+                    window.location = "/admin/library";
+                }
+            });
+
+            fileInput.on("change", async ()=>{
+                const file = fileInput[0].files[0];
+                
+                const onCompressed = async (response) => {
+                    util.showLoading(imgArea);
+
+                    // upload thumbnail
+                    const thumbUploadRes = await api.uploadFile("image", response.file);
+                    const thumbUploadBod = await thumbUploadRes.json();
+
+                    if(thumbUploadRes.ok){
+                        const thumbFetchRes = await fetch(thumbUploadBod.file.url);
+                        if(thumbFetchRes.ok) {
+                            thumbUrl = thumbUploadBod.file.url;
+                            thumbNotes.html(`
+                                <a target="_blank" href="${thumbUrl}"><i class="fas fa-download"></i></a> | 
+                                Size: ${util.getFileSize(thumbFetchRes.headers.get("content-length"))}
+                            `);
+                            imgThumbPreview.prop("src", thumbUrl);
+                        }
+                    }
+                    
+                    // upload original
+                    const originalUploadRes = await api.uploadFile("image", file);
+                    const originalUploadBod = await originalUploadRes.json();
+
+                    if(originalUploadRes.ok){
+                        const originalFetchRes = await fetch(originalUploadBod.file.url);
+                        if(originalFetchRes.ok) {
+                            imgUrl = originalUploadBod.file.url;
+                            originalNotes.html(`
+                                <a target="_blank" href="${imgUrl}"><i class="fas fa-download"></i></a> | 
+                                Size: ${util.getFileSize(originalFetchRes.headers.get("content-length"))}
+                            `);
+                            imgOriginalPreview.prop("src", imgUrl);
+                        }
+                    }
+
+                    util.hideLoading(imgArea);
+                };
+
+                util.compressImage(file, {
+                    maxWidth: 5000,
+                    maxHeight: 5000,
+                    quality: .5,
+                    mimeType: "image/jpeg"
+                }, onCompressed);
+            });
+        };
+        page();
+    </script>
+</body>
+</html>
