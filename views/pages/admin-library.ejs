@@ -13,7 +13,7 @@
         <div class="container my-4 py-5">
             <div class="row">
                 <div class="col-2 mb-2">
-                    <button type="button" class="btn btn-success btn-sm">Add</button>
+                    <a href="/admin/library/add" class="btn btn-success btn-sm">Add</a>
                 </div>
                 <div class="col-4 mb-2">
                     <div class="input-group">
@@ -89,6 +89,10 @@
             </div>
         </div>
     </main>
+    
+    <footer>
+        <%- include('../partials/footer-admin'); %>
+    </footer>
 
     <script>
         const libraryPage = async ()=>{
@@ -309,17 +313,6 @@
             btnSearch.on("click", () => {
                 search();
             });
-
-            // <label for="fileInput" class="form-label">Upload File</label>
-            // <input class="form-control" type="file" id="fileInput">
-            // fileInput.on("change", async ()=>{
-            //     const file = fileInput[0].files[0];
-
-            //     const res = await api.uploadFile("image", file);
-            //     const bod = await res.json();
-
-            //     console.log(bod);
-            // });
         };
         libraryPage();
     </script>
