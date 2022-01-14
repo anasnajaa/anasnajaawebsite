@@ -1,6 +1,6 @@
 <div class="col-sm-6 col-lg-4 mb-4">
     <div class="card p-3">
-        <a href="<%=item.url%>" target="_blank" class="card-title text-dark mb-0 text-decoration-none">
+        <a href="<%=item.url%>" target="_blank" class="card-title text-dark mt-3 mb-0 text-decoration-none">
             <%=item.title %> <i class="fas fa-external-link-alt"></i>
         </a>
         <%if(item.dTags !== undefined && item.dTags !== null && item.dTags.length > 0){%>
@@ -10,5 +10,60 @@
             <%})%>
         </div>
         <%}%>
+        <button class="btn btn-dark btn-sm" data-bs-toggle="modal" data-bs-target="#modal_<%=item._id%>" style="position: absolute;right: 5px;top: 5px;">
+            <i class="fas fa-info-circle"></i>
+        </button>
+    </div>
+    <div class="modal fade" id="modal_<%=item._id%>" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Link Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table mb-0">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Title</th>
+                                <td><%= item.title %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">URL</th>
+                                <td>
+                                    <a href="<%=item.url%>" target="_blank">
+                                        View <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Published</th>
+                                <td><%= item.dateFriendly %></td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Tags</th>
+                                <td>
+                                    <%if(item.dTags !== undefined && item.dTags !== null && item.dTags.length > 0){%>
+                                        <%item.dTags.forEach(tag=>{%>
+                                        <%- include('../partials/lib-tag', {tag}); %>
+                                        <%})%>
+                                    <%}%>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Description</th>
+                                <td>
+                                    <%if(item.content !== undefined && item.content !== null && item.content !== ""){%>
+                                        <%= item.content %>
+                                    <%} else {%>
+                                        No Description
+                                    <%}%>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
