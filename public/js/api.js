@@ -76,12 +76,14 @@ const deleteRequest = (url, queryParams) => {
 };
 
 const api = {
-	uploadFile: (type, fileData) => {
+	uploadFile: (options, fileData) => {
 		const formData = new FormData();
 		formData.append("file", fileData);
-		const queryParams = { type };
+		const queryParams = { 
+			type: options.type || "image"
+		};
 
-		return fetch(`/api/v1/admin/upload-file?${new URLSearchParams(queryParams)}`, {
+		return fetch(`/api/v1/admin/files/upload?${new URLSearchParams(queryParams)}`, {
 			method: "POST",
 			body: formData,
 			redirect: "follow",
@@ -128,5 +130,8 @@ const api = {
 		getTypes: () => {
 			return getRequest(`/api/v1/library/types`, {});
 		},
+		addItem: ({title, type, url, tags, date, img, thumb, content}) => {
+			return postRequest(`/api/v1/library`, null, { title, type, url, tags, date, img, thumb, content });
+		}
 	}
 };
