@@ -29,7 +29,8 @@ exports.uploadFile = async (req, res, next) => {
 		const params = {
 			Bucket: stage.aws.bucketName,
 			Key: `${type}/${uuid.v4()}${ext}`,
-			Body: fileContent
+			Body: fileContent,
+			ACL: 'public-read'
 		};
 
 		s3.upload(params, (err, data) => {
