@@ -29,8 +29,8 @@ exports.libraryPage = async (req, res, next) => {
 
 		p = p || 1;
 		l = l || 20;
-		t = t || "";
-		tg = tg || "";
+		t = t;
+		tg = tg;
 
 		p = parseInt(p);
 		l = parseInt(l);
@@ -45,7 +45,7 @@ exports.libraryPage = async (req, res, next) => {
 		const count = await libraryModel.find(search).count();
 		const items = await libraryModel
 			.find(search)
-			.sort({ date: 1 })
+			.sort({ _id: -1 })
 			.limit(l)
 			.skip((p - 1) * l)
 			.lean();
@@ -53,6 +53,8 @@ exports.libraryPage = async (req, res, next) => {
 		if (items !== undefined && items !== null && items.length > 0) {
 			for (i = 0; i < items.length; i++) {
 				const item = items[i];
+				const publishDate = new moment(item.date);
+				item.dateFriendly = publishDate.format("DD/MM/YYYY HH:mm A");
 				item.dTags = [];
 				item.tags.forEach((tag) => {
 					item.dTags.push({
