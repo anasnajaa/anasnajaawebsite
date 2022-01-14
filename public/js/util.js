@@ -98,5 +98,91 @@ const util = {
 				onEnter();
             }
         });
+	},
+	getFileSize: (bytes) => {
+		const i = Math.floor(Math.log(bytes) / Math.log(1024)),
+			sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+		return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+	},
+	calculateSize: (img, maxWidth, maxHeight) => {
+		let width = img.width;
+		let height = img.height;
+
+		if (width > height) {
+			if (width > maxWidth) {
+				height = Math.round((height * maxWidth) / width);
+				width = maxWidth;
+			}
+		} else {
+			if (height > maxHeight) {
+				width = Math.round((width * maxHeight) / height);
+				height = maxHeight;
+			}
+		}
+		return [width, height];
+	},
+	compressImage: (file, options, onCompressed) => {
+		const MAX_WIDTH = options.maxWidth || 1000;
+		const MAX_HEIGHT = options.maxHeight || 1000;
+		const QUALITY = options.quality || .8;
+		const MIME_TYPE = options.mimeType || "image/jpeg";
+		const blobURL = URL.createObjectURL(file);
+
+		const img = new Image();
+
+		img.src = blobURL;
+		img.onload = function () {
+			URL.revokeObjectURL(this.src);
+			const [newWidth, newHeight] = util.calculateSize(img, MAX_WIDTH, MAX_HEIGHT);
+			const canvas = document.createElement("canvas");
+			canvas.style = "display:none;"
+			canvas.width = newWidth;
+			canvas.height = newHeight;
+			const ctx = canvas.getContext("2d");
+			ctx.drawImage(img, 0, 0, newWidth, newHeight);
+			canvas.toBlob(async (blob) => {
+				var blobFile = new File([blob], file.name, { type: blob.type });
+				onCompressed({
+					name: blobFile.name,
+					file: blobFile,
+					sizeFriendly: util.getFileSize(blobFile.size),
+					sizeRaw: blobFile.size,
+					src: URL.createObjectURL(blobFile),
+				});
+			}, MIME_TYPE, QUALITY);
+			document.getElementById("main").append(canvas);
+		};	
+	},
+ 	consumeFlash: () => {
+		const flash = localStorage.getItem('flash');
+		if (flash === null) { return; }
+
+		const flashObject = JSON.parse(flash);
+
+		localStorage.removeItem("flash");
+
+		if (flashObject.variation === "toast") {
+			toasts.simple({
+				title: flashObject.title, 
+				body: flashObject.message, 
+				type: flashObject.type,
+				duration: 5000, 
+				pos: "tr"
+			});
+			return;
+		}
+
+		if (flashObject.variation === "modal") {
+			const alert = alerts.simple(flashObject.title, flashObject.message,
+				flashObject.type, (dismiss) => { dismiss(); });
+			alert.modal.show();
+			return;
+		}
+	},
+	setFlashMessage: ({variation, title, message, type}) => {
+		localStorage.setItem('flash', JSON.stringify({
+			title, message, type, variation
+		}));
 	}
 };
