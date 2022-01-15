@@ -29,8 +29,8 @@ exports.libraryPage = async (req, res, next) => {
 
 		p = p || 1;
 		l = l || 20;
-		t = t;
-		tg = tg;
+		t = t || "";
+		tg = tg || "";
 
 		p = parseInt(p);
 		l = parseInt(l);
