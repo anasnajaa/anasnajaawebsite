@@ -95,3 +95,7 @@ html {
   object-fit: cover;
   object-position: center; 
 }
+
+.kg-image {
+    width: 100%;
+}
