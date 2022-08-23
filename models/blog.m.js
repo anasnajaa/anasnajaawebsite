@@ -9,9 +9,9 @@ const KEY = `key=${API_KEY}`;
 exports.getPosts = async (limit, page, tag) => {
   const response = await fetch(
     `${API_URL}/posts/?${KEY}&` +
-      `fields=id,title,slug,custom_excerpt,reading_time,feature_image,` +
-      `created_at,updated_at,published_at,meta&include=tags&limit=${limit}&page=${page}&` +
-      `${tag ? `filter=tag:${tag}` : ""}`
+    `fields=id,title,slug,custom_excerpt,reading_time,feature_image,` +
+    `created_at,updated_at,published_at,meta&include=tags&limit=${limit}&page=${page}&` +
+    `${tag ? `filter=tag:${tag}` : ""}`
   );
   if (response.ok) return await response.json();
   return null;
@@ -28,7 +28,7 @@ exports.getAllPosts = async () => {
 exports.getPostBySlug = async (slug) => {
   const response = await fetch(
     `${API_URL}/posts/slug/${slug}/?${KEY}&include=tags&` +
-      "fields=id,title,slug,html,reading_time,feature_image,created_at,updated_at,published_at"
+    "fields=id,title,slug,html,reading_time,feature_image,created_at,updated_at,published_at"
   );
   if (response.ok) {
     const body = await response.json();
@@ -54,7 +54,7 @@ exports.getTags = async () => {
 exports.getPagesByInternalTag = async (internalTag) => {
   const response = await fetch(
     `${API_URL}/pages/?${KEY}&fields=id,title,html,feature_image,` +
-      `updated_at,published_at&limit=all&filter=tag:${internalTag}&filter=visibility:internal`
+    `updated_at,published_at&limit=all&filter=tag:${internalTag}&filter=visibility:internal`
   );
   if (response.ok) return await response.json();
   return null;
@@ -72,11 +72,11 @@ exports.getPageBySlug = async (slug) => {
 };
 
 exports.tagsCssResolver = (id) => {
-  switch(id){
-    case "5f86bc611488fc001eea51ae":  return "blog-red-tag";
-    case "5f8a7e4a11e139001eb1d5d2":  return "blog-blue-tag";
-    case "5f7f519ecbab9f001ede0c9b":  return "blog-green-tag";
-    case "5f8a7f6d11e139001eb1d5d6":  return "blog-purple-tag";
-    default:                          return "";
+  switch (id) {
+    case "5f86bc611488fc001eea51ae": return "blog-red-tag";
+    case "6304b0e122678c34a8480607": return "blog-blue-tag";
+    case "6304b0e122678c34a8480609": return "blog-green-tag";
+    case "6304b0e122678c34a848060a": return "blog-purple-tag";
+    default: return "";
   }
 };

@@ -34,10 +34,10 @@ exports.serviceVerify = async (req, res, next) => {
 exports.servicePage = async (req, res, next) => {
 	try {
 		const response = await blogModel.getPagesByInternalTag("services-page");
-		const headerSectionId = "5f9040ca5d24f1001e75ee71";
-		const teachingProgramming = "5f904a755d24f1001e75eeb5";
-		const developmentProject = "5f904b025d24f1001e75eec3";
-		const generalIt = "5f904bd15d24f1001e75eeed";
+		const headerSectionId = "6304b0e222678c34a8480619";
+		const teachingProgramming = "6304b0e222678c34a848061a";
+		const developmentProject = "6304b0e222678c34a848061b";
+		const generalIt = "6304b0e222678c34a848061c";
 
 		const headerCard = response.pages.find((x) => x.id === headerSectionId);
 		const services = response.pages.filter((x) => {
