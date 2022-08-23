@@ -10,6 +10,7 @@ const rateLimiter = require("./middleware/rateLimiter");
 const errorHandler = require("./middleware/errorHandler");
 const environment = process.env.NODE_ENV;
 const stage = require("./config/index")[environment];
+const cors = require('cors');
 
 mongoose.connect(stage.mongoUri, {
 	useNewUrlParser: true,
@@ -28,6 +29,10 @@ function startServer() {
 	app.set("views", path.join(__dirname, "views"));
 	app.set("view engine", "ejs");
 
+	app.use(cors({
+		origin: "http://localhost:4200",
+		credentials: true
+	}));
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: true }));
 	app.use(cookieParser());
