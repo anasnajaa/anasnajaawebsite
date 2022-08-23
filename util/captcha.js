@@ -1,5 +1,3 @@
-require("es6-promise").polyfill();
-require("isomorphic-fetch");
 require("dotenv").config();
 const googleRecaptchSecretKey = process.env.GOOGLE_RECAPTCHA_SECRET_KEY;
 const googleCaptchEndpoint = "https://www.google.com/recaptcha/api/siteverify";

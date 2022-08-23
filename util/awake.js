@@ -1,5 +1,3 @@
-require("es6-promise").polyfill();
-require("isomorphic-fetch");
 require("dotenv").config();
 
 exports.contentServer = async () => {
