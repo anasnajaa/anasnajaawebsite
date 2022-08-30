@@ -79,7 +79,7 @@ const api = {
 	uploadFile: (options, fileData) => {
 		const formData = new FormData();
 		formData.append("file", fileData);
-		const queryParams = { 
+		const queryParams = {
 			type: options.type || "image"
 		};
 
@@ -107,11 +107,11 @@ const api = {
 		return postRequest(`/api/v1/service/${requestId}/verify`, null, { otp });
 	},
 	library: {
-		getItems: ({page, limit, type, tag, orderBy, searchTitle, searchUrl}) => {
+		getItems: ({ page, limit, type, tag, orderBy, searchTitle, searchUrl }) => {
 			return getRequest('/api/v1/library', {
-				p: page, 
-				l: limit, 
-				t: type, 
+				p: page,
+				l: limit,
+				t: type,
 				tg: tag,
 				o: orderBy,
 				st: searchTitle,
@@ -130,7 +130,7 @@ const api = {
 		getTypes: () => {
 			return getRequest(`/api/v1/library/types`, {});
 		},
-		addItem: ({title, type, url, tags, date, img, thumb, content}) => {
+		addItem: ({ title, type, url, tags, date, img, thumb, content }) => {
 			return postRequest(`/api/v1/library`, null, { title, type, url, tags, date, img, thumb, content });
 		}
 	}

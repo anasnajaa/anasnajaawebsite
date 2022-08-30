@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 require("dotenv").config();
+const fetch = require('isomorphic-fetch');
 const environment = process.env.NODE_ENV;
 const stage = require("../config/index")[environment];
 const API_KEY = stage.blog.apiKey;

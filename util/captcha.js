@@ -1,4 +1,5 @@
 require("dotenv").config();
+const fetch = require('isomorphic-fetch');
 const googleRecaptchSecretKey = process.env.GOOGLE_RECAPTCHA_SECRET_KEY;
 const googleCaptchEndpoint = "https://www.google.com/recaptcha/api/siteverify";
 exports.isCaptchaValid = async (key) => {

@@ -1,3 +1,4 @@
+const fetch = require('isomorphic-fetch');
 require("dotenv").config();
 
 exports.contentServer = async () => {
